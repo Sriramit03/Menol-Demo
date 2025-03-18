@@ -23,5 +23,6 @@ export const icons ={
     leftArrow: require('../../assets/icons/leftArrow.png'),
     /* cart: require('../../assets/icons/cart.png'), */
     search: require('../../assets/icons/search.png'),
+    star:require('../../assets/icons/star.png'),
     downArrow: require('../../assets/icons/down-arrow.png'),
 }

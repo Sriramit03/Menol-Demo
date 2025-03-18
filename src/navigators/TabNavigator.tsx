@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Image, View} from 'react-native';
+import {StyleSheet, Image, View, StatusBar} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {colors} from '../utils/theme';
 import HomeScreen from '../screens/HomeScreen';
@@ -11,6 +11,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import AiCamera from '../screens/AiCamera';
 import Wardrobe from '../screens/Wardrobe';
 import Profile from '../screens/Profile';
+import Filter from '../components/Filter';
 
 const Tab = createBottomTabNavigator();
 
@@ -39,15 +40,10 @@ const TabNavigator = () => {
       }}>
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={Filter}
         options={{
           tabBarIcon: ({focused, color, size}) => (
-            <Feather
-              name="home"
-              color="#000"
-              size={24}
-              style={[styles.iconStyles, focused && styles.iconStylesFocused]}
-            />
+            <TabIcon focused={focused} icon={icons.home} />
           ),
         }}
       />
@@ -56,12 +52,7 @@ const TabNavigator = () => {
         component={WishList}
         options={{
           tabBarIcon: ({focused, color, size}) => (
-            <Feather
-              name="heart"
-              color="#000"
-              size={24}
-              style={[styles.iconStyles, focused && styles.iconStylesFocused]}
-            />
+            <TabIcon focused={focused} icon={icons.wishlist} />
           ),
         }}
       />
@@ -70,12 +61,7 @@ const TabNavigator = () => {
         component={AiCamera}
         options={{
           tabBarIcon: ({focused}) => (
-            <Feather
-              name="camera"
-              color="#000"
-              size={24}
-              style={[styles.iconStyles, focused && styles.iconStylesFocused]}
-            />
+            <TabIcon focused={focused} icon={icons.camera} />
           ),
         }}
       />
@@ -84,12 +70,7 @@ const TabNavigator = () => {
         component={Wardrobe}
         options={{
           tabBarIcon: ({focused}) => (
-            <Feather
-              name="shopping-cart"
-              color="#000"
-              size={24}
-              style={[styles.iconStyles, focused && styles.iconStylesFocused]}
-            />
+            <TabIcon focused={focused} icon={icons.cart} />
           ),
         }}
       />
@@ -98,15 +79,11 @@ const TabNavigator = () => {
         component={Profile}
         options={{
           tabBarIcon: ({focused}) => (
-            <Feather
-              name="user"
-              color="#000"
-              size={24}
-              style={[styles.iconStyles, focused && styles.iconStylesFocused]}
-            />
+            <TabIcon focused={focused} icon={icons.profile} />
           ),
         }}
       />
+      
     </Tab.Navigator>
   );
 };
@@ -125,7 +102,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderColor: colors.primaryGrey,
   },
-/*   iconContainer: {
+  /*   iconContainer: {
     padding: 5,
   }, */
   iconStyles: {
@@ -142,3 +119,10 @@ const styles = StyleSheet.create({
 });
 
 export default TabNavigator;
+
+/* <Feather
+              name="home"
+              color="#000"
+              size={24}
+              style={[styles.iconStyles, focused && styles.iconStylesFocused]}
+            /> */
