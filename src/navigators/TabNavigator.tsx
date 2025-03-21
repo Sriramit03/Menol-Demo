@@ -12,6 +12,9 @@ import AiCamera from '../screens/AiCamera';
 import Wardrobe from '../screens/Wardrobe';
 import Profile from '../screens/Profile';
 import Filter from '../components/Filter';
+import Temp from '../components/Temp';
+import LogInScreen from '../screens/auth/LogInScreen';
+import SignUpScreen from '../screens/auth/SignUpScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -40,7 +43,7 @@ const TabNavigator = () => {
       }}>
       <Tab.Screen
         name="Home"
-        component={Filter}
+        component={HomeScreen}
         options={{
           tabBarIcon: ({focused, color, size}) => (
             <TabIcon focused={focused} icon={icons.home} />

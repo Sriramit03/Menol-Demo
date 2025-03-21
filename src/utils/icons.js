@@ -24,5 +24,6 @@ export const icons ={
     /* cart: require('../../assets/icons/cart.png'), */
     search: require('../../assets/icons/search.png'),
     star:require('../../assets/icons/star.png'),
+    plus:require('../../assets/icons/plus.png'),
     downArrow: require('../../assets/icons/down-arrow.png'),
 }

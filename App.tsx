@@ -3,6 +3,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import TabNavigator from './src/navigators/TabNavigator';
 import { StatusBar } from 'react-native';
+import LogInScreen from './src/screens/auth/LogInScreen';
+import SignUpScreen from './src/screens/auth/SignUpScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -13,7 +15,9 @@ const App = () => {
   }, []);
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName="LogInScreen">
+        <Stack.Screen name='LogInScreen' component={LogInScreen}/>
+        <Stack.Screen name='SignUpScreen' component={SignUpScreen}/>
         <Stack.Screen
           name="Tab"
           component={TabNavigator}
