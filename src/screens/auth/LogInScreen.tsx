@@ -3,21 +3,31 @@ import {
   Text,
   Alert,
   StyleSheet,
-  Touchable,
   TouchableOpacity,
+  Image,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
 import {colors} from '../../utils/theme';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {logIn} from '../../backend/fireBaseConfig';
+import {logIn, onGoogleButtonPress} from '../../backend/fireBaseConfig';
+import {icons} from '../../utils/icons';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
 
 const LogInScreen = ({navigation}) => {
   const [formValues, setFormValues] = useState({
     name: '',
     password: '',
   });
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '347113254469-hm6asjqrj3bu721gnkfd61c06gh86ngi.apps.googleusercontent.com',
+    });
+  }, []);
 
   const handleLogIn = async () => {
     if (formValues.name == '' || formValues.password == '') {
@@ -38,9 +48,22 @@ const LogInScreen = ({navigation}) => {
     }
   };
 
-  const newAccountFunc = () =>{
-    navigation.navigate('SignUpScreen')
+  const googleLogin = async() =>{
+    try {
+      await GoogleSignin.hasPlayServices();
+      const signInResult = await GoogleSignin.signIn();
+      const idToken = signInResult.data?.idToken;
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      await auth().signInWithCredential(googleCredential);
+      Alert.alert('Success', 'Google Sign-In Successful!');
+    } catch (error) {
+      Alert.alert('Error', `Google Sign-In Failed! ${error}`);
+    }
   }
+
+  const newAccountFunc = () => {
+    navigation.navigate('SignUpScreen');
+  };
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -69,8 +92,15 @@ const LogInScreen = ({navigation}) => {
           }}
           textStyles={{color: colors.primaryWhite}}
         />
+        <View style={styles.googleButtonContainer}>
+          <TouchableOpacity style={styles.googleButton} onPress={googleLogin}>
+            <Text style={styles.newAccountText}>Log In with Google</Text>
+            <Image source={icons.google} style={styles.googleIcon} />
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.newAccountContainer}>
-          <Text style={styles.newAccountText}>Create a new Account</Text>
+          <Text style={styles.newAccountText}>Don't have an Account ?</Text>
           <TouchableOpacity onPress={newAccountFunc}>
             <Text style={styles.signUpText}>SignUp</Text>
           </TouchableOpacity>
@@ -90,17 +120,35 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
   },
-  newAccountContainer:{
-    flexDirection:'row',
-    gap:10,
-    justifyContent:'center',
+  newAccountContainer: {
+    marginVertical: '2%',
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'center',
   },
-  newAccountText:{
-    fontSize:16,
+  newAccountText: {
+    fontSize: 16,
   },
-  signUpText:{
-    fontSize:16,
-    color:colors.primaryBlue,
-  }
+  signUpText: {
+    fontSize: 16,
+    color: colors.primaryBlue,
+  },
+  googleButtonContainer: {
+    marginHorizontal: '5%',
+    marginVertical: '2%',
+  },
+  googleIcon: {
+    width: 24,
+    height: 24,
+  },
+  googleButton: {
+    padding: 10,
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: colors.primaryGrey,
+    borderRadius: 8,
+    flexDirection: 'row',
+    gap: 15,
+  },
 });
 export default LogInScreen;

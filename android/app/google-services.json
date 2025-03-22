@@ -1,26 +1,36 @@
 {
   "project_info": {
-    "project_number": "274098531727",
-    "project_id": "menol-cbad7",
-    "storage_bucket": "menol-cbad7.firebasestorage.app"
+    "project_number": "347113254469",
+    "project_id": "menol-3f698",
+    "storage_bucket": "menol-3f698.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:274098531727:android:4eff968a1bca0a827aeffa",
+        "mobilesdk_app_id": "1:347113254469:android:99433a6bbee487ac8c7d2c",
         "android_client_info": {
           "package_name": "com.testingproject"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "347113254469-hm6asjqrj3bu721gnkfd61c06gh86ngi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyCX9i0sQv9r9EMobhldFgjds_YfWqWkWQw"
+          "current_key": "AIzaSyAYOcJ3eMCbABK1iSc6IQvFILZT7PGNNAI"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "347113254469-hm6asjqrj3bu721gnkfd61c06gh86ngi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
