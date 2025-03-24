@@ -15,7 +15,7 @@ const App = () => {
   }, []);
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName="LogInScreen">
+      <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName="Tab">
         <Stack.Screen name='LogInScreen' component={LogInScreen}/>
         <Stack.Screen name='SignUpScreen' component={SignUpScreen}/>
         <Stack.Screen

@@ -27,4 +27,6 @@ export const icons ={
     plus:require('../../assets/icons/plus.png'),
     downArrow: require('../../assets/icons/down-arrow.png'),
     google: require('../../assets/icons/google.png'),
+    edit: require('../../assets/icons/edit.png'),
+    rightArrow: require('../../assets/icons/right-arrow.png'),
 }

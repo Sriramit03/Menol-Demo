@@ -1,4 +1,4 @@
-package com.testingproject
+package com.MenolDemoApp
 
 import android.app.Application
 import com.facebook.react.PackageList

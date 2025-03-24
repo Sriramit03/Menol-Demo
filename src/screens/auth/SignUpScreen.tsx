@@ -1,5 +1,6 @@
 import {
   Alert,
+  Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -11,7 +12,8 @@ import React, {useState} from 'react';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
 import {colors} from '../../utils/theme';
-import {signUp} from '../../backend/fireBaseConfig';
+import {googleLogin, signUp} from './fireBaseConfig';
+import {icons} from '../../utils/icons';
 
 const SignUpScreen = ({navigation}) => {
   const [formValues, setFormValues] = useState({
@@ -51,9 +53,25 @@ const SignUpScreen = ({navigation}) => {
     }
   };
 
-  const oldAccountFunc = () =>{
-     navigation.replace("LogInScreen")
-  }
+  const handleGoogleSignUp = async () => {
+    const res = await googleLogin();
+    if (!res) Alert.alert('Failure', 'Google Sign-Un Failed!');
+    Alert.alert(
+      'Success',
+      `Successfully Signed In as ${res?.user.displayName}`,
+      [
+        {
+          text: 'Ok',
+          onPress: () => navigation.replace('Tab'),
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const oldAccountFunc = () => {
+    navigation.replace('LogInScreen');
+  };
   return (
     <SafeAreaView>
       <ScrollView>
@@ -100,6 +118,12 @@ const SignUpScreen = ({navigation}) => {
             textStyles={{color: colors.primaryWhite}}
           />
         </View>
+        <View style={styles.googleButtonContainer}>
+          <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignUp}>
+            <Text style={styles.oldAccountText}>Sign up with Google</Text>
+            <Image source={icons.google} style={styles.googleIcon} />
+          </TouchableOpacity>
+        </View>
         <View style={styles.oldAccountContainer}>
           <Text style={styles.oldAccountText}>Already have an account?</Text>
           <TouchableOpacity onPress={oldAccountFunc}>
@@ -123,17 +147,34 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  oldAccountContainer:{
-    flexDirection:'row',
-    gap:10,
-    justifyContent:'center',
+  oldAccountContainer: {
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'center',
   },
-  oldAccountText:{
-    fontSize:16,
+  oldAccountText: {
+    fontSize: 16,
   },
-  logInText:{
-    fontSize:16,
-    color:colors.primaryBlue,
-  }
+  logInText: {
+    fontSize: 16,
+    color: colors.primaryBlue,
+  },
+  googleButtonContainer: {
+    marginHorizontal: '5%',
+    marginVertical: '2%',
+  },
+  googleIcon: {
+    width: 24,
+    height: 24,
+  },
+  googleButton: {
+    padding: 10,
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: colors.primaryGrey,
+    borderRadius: 8,
+    flexDirection: 'row',
+    gap: 15,
+  },
 });
 export default SignUpScreen;
