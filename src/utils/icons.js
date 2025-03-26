@@ -29,4 +29,10 @@ export const icons ={
     google: require('../../assets/icons/google.png'),
     edit: require('../../assets/icons/edit.png'),
     rightArrow: require('../../assets/icons/right-arrow.png'),
+    payment: require('../../assets/icons/payment.png'),
+    editOrders: require('../../assets/icons/edit-orders.png'),
+    setting: require('../../assets/icons/setting.png'),
+    helpCenter: require('../../assets/icons/help-center.png'),
+    privacy: require('../../assets/icons/privacy.png'),
+    logOut: require('../../assets/icons/log-out.png'),
 }

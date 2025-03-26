@@ -15,13 +15,13 @@ import {colors} from '../utils/theme';
 
 export const ProfileOption = ({icon, title}) => {
   return (
-    <View style={optionStyles.container}>
+    <TouchableOpacity style={optionStyles.container}>
       <View style={optionStyles.innerContainer}>
         <Image source={icon} style={optionStyles.icon} />
         <Text style={optionStyles.optionText}>{title}</Text>
       </View>
       <Image source={icons.rightArrow} style={optionStyles.icon} />
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -43,12 +43,16 @@ const Profile = () => {
           <Text style={styles.profileText}>Esther Howard</Text>
         </View>
 
-        {/* Profile Options  */}
         <View>
           <ProfileOption icon={icons.profile.default} title={'Your Profile'} />
+          <ProfileOption icon={icons.payment} title={'Payment Methods'} />
+          <ProfileOption icon={icons.editOrders} title={'My Orders'} />
+          <ProfileOption icon={icons.setting} title={'Setting'} />
+          <ProfileOption icon={icons.helpCenter} title={'Help Center'} />
+          <ProfileOption icon={icons.privacy} title={'Privacy Policy'} />
+          <ProfileOption icon={icons.logOut} title={'Log Out'} />
         </View>
       </ScrollView>
-      /
     </SafeAreaView>
   );
 };
@@ -58,6 +62,7 @@ export default Profile;
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: '5%',
+   
   },
   profileImage: {
     width: 107,
@@ -93,7 +98,7 @@ const styles = StyleSheet.create({
 
 const optionStyles = StyleSheet.create({
   container: {
-    marginTop:'5%',
+    paddingVertical:'5%',
     paddingHorizontal: '8%',
     flexDirection: 'row',
     justifyContent: 'space-between',

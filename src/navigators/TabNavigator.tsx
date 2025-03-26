@@ -15,6 +15,7 @@ import Filter from '../components/Filter';
 import Temp from '../components/Temp';
 import LogInScreen from '../screens/auth/LogInScreen';
 import SignUpScreen from '../screens/auth/SignUpScreen';
+import ProductDetailsScreen from '../screens/ProductDetailsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -43,7 +44,7 @@ const TabNavigator = () => {
       }}>
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={ProductDetailsScreen}
         options={{
           tabBarIcon: ({focused, color, size}) => (
             <TabIcon focused={focused} icon={icons.home} />
