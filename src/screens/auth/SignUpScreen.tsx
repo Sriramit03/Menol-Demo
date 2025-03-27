@@ -14,6 +14,7 @@ import CustomButton from '../../components/CustomButton';
 import {colors} from '../../utils/theme';
 import {googleLogin, signUp} from './fireBaseConfig';
 import {icons} from '../../utils/icons';
+import Icon from 'react-native-vector-icons/Feather';
 
 const SignUpScreen = ({navigation}) => {
   const [formValues, setFormValues] = useState({
@@ -22,6 +23,8 @@ const SignUpScreen = ({navigation}) => {
     password: '',
     confirmPassword: '',
   });
+
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleSignUp = async () => {
     if (
@@ -78,52 +81,68 @@ const SignUpScreen = ({navigation}) => {
         <View style={styles.container}>
           <Text style={styles.welcomeText}>New Account</Text>
           <FormField
-            title={'Username'}
             value={formValues.name}
-            placeholder={'Enter Username'}
+            placeholder={'Username'}
             handleChangeText={e => setFormValues({...formValues, name: e})}
             otherStyles={{paddingHorizontal: '5%'}}
           />
           <FormField
-            title={'Email'}
             value={formValues.email}
-            placeholder={'Enter Email'}
+            placeholder={'Email'}
             handleChangeText={e => setFormValues({...formValues, email: e})}
             otherStyles={{paddingHorizontal: '5%'}}
           />
           <FormField
-            title={'Password'}
             value={formValues.password}
-            placeholder={'Enter Password'}
+            placeholder={'Password'}
             handleChangeText={e => setFormValues({...formValues, password: e})}
             otherStyles={{paddingHorizontal: '5%'}}
           />
           <FormField
-            title={'Confirm Password'}
             value={formValues.confirmPassword}
-            placeholder={'Re-Enter Your Password'}
+            placeholder={'Re-Enter Password'}
             handleChangeText={e =>
               setFormValues({...formValues, confirmPassword: e})
             }
             otherStyles={{paddingHorizontal: '5%'}}
           />
+
+          <TouchableOpacity
+            style={styles.rememberContainer}
+            onPress={() => setRememberMe(!rememberMe)}>
+            <View style={styles.rememberBox}>
+              {rememberMe && <Icon name="check" size={18} />}
+            </View>
+            <Text style={styles.rememberText}>Remember me</Text>
+          </TouchableOpacity>
+
           <CustomButton
-            buttonName={'Create New Account'}
+            buttonName={'Create Account'}
             handleFunc={handleSignUp}
             containerStyles={{
-              backgroundColor: '#2E8BF2',
-              borderRadius: 12,
+              backgroundColor: '#000',
+              height: 60,
               width: '90%',
             }}
             textStyles={{color: colors.primaryWhite}}
           />
         </View>
-        <View style={styles.googleButtonContainer}>
-          <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignUp}>
-            <Text style={styles.oldAccountText}>Sign up with Google</Text>
-            <Image source={icons.google} style={styles.googleIcon} />
+
+        <Text style={styles.otherLogInText}>Or Continue with others</Text>
+        <View style={styles.otherLogInContainer}>
+          <TouchableOpacity
+            style={styles.socialButton}
+            onPress={handleGoogleSignUp}>
+            <Image source={icons.google} style={styles.Icon} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.socialButton} onPress={undefined}>
+            <Image source={icons.facebook} style={styles.Icon} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.socialButton} onPress={undefined}>
+            <Image source={icons.twitter} style={styles.Icon} />
           </TouchableOpacity>
         </View>
+
         <View style={styles.oldAccountContainer}>
           <Text style={styles.oldAccountText}>Already have an account?</Text>
           <TouchableOpacity onPress={oldAccountFunc}>
@@ -137,44 +156,76 @@ const SignUpScreen = ({navigation}) => {
 
 const styles = StyleSheet.create({
   welcomeText: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
+    letterSpacing: 3,
+    marginVertical: 10,
   },
   container: {
-    marginTop: '25%',
+    marginTop: '15%',
     height: '100%',
     flex: 1,
     justifyContent: 'center',
   },
+
+  rememberContainer: {
+    marginHorizontal: '5%',
+    flexDirection: 'row',
+    gap: 10,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  rememberBox: {
+    borderWidth: 1,
+    borderColor: colors.primaryGrey,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rememberText: {
+    letterSpacing: 3,
+    fontSize: 12,
+  },
+
+  otherLogInText: {
+    marginVertical: 10,
+    fontSize: 12,
+    textAlign: 'center',
+    letterSpacing: 3,
+    fontWeight: '500',
+    textDecorationLine: 'underline',
+  },
+  otherLogInContainer: {
+    marginHorizontal: '5%',
+    marginVertical: '2%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 10,
+  },
+  socialButton:{
+    padding:10,
+  },
+  Icon: {
+    width: 40,
+    height: 40,
+  },
+
   oldAccountContainer: {
     flexDirection: 'row',
     gap: 10,
     justifyContent: 'center',
   },
   oldAccountText: {
-    fontSize: 16,
+    fontSize: 14,
+    letterSpacing:3
   },
   logInText: {
-    fontSize: 16,
+    fontSize: 14,
     color: colors.primaryBlue,
-  },
-  googleButtonContainer: {
-    marginHorizontal: '5%',
-    marginVertical: '2%',
-  },
-  googleIcon: {
-    width: 24,
-    height: 24,
-  },
-  googleButton: {
-    padding: 10,
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: colors.primaryGrey,
-    borderRadius: 8,
-    flexDirection: 'row',
-    gap: 15,
+    letterSpacing:3,
   },
 });
 export default SignUpScreen;

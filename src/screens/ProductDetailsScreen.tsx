@@ -13,7 +13,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import CustomHeader from '../components/CustomHeader';
 import {colors} from '../utils/theme';
 import CustomButton from '../components/CustomButton';
-
+import Icon from 'react-native-vector-icons/Feather'
 
 const ProductDetailsScreen = () => {
   const product = {
@@ -22,13 +22,15 @@ const ProductDetailsScreen = () => {
     brand: 'H&M',
     price: '₹ 600',
     description:
-      'Luxury jackets are made from high-quality materials and are often associated with luxury brands',
+      'Luxury jackets are made from high-quality materials and are often associated with luxury brands',
     sizeAvailable: ['S', 'M', 'L', 'XL'],
     color: ['black', 'green'],
     image: require('../../assets/images/Jacket.jpeg'),
   };
 
   const [selectedSize, setSelectedSize] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
+
   return (
     <SafeAreaView style={styles.container}>
       <CustomHeader title={'Product Details'} />
@@ -52,14 +54,13 @@ const ProductDetailsScreen = () => {
               data={product.color}
               renderItem={({item}) => (
                 <TouchableOpacity
-                  style={{
-                    borderWidth: 1,
-                    borderColor: item,
-                    height: 40,
-                    width: 40,
-                    backgroundColor: item,
-                    marginHorizontal: 4,
-                  }}></TouchableOpacity>
+                  style={[
+                    {
+                      borderColor: item,
+                      backgroundColor: item,
+                    },
+                    styles.colorBox,
+                  ]} onPress={()=>setSelectedColor(item)}>{selectedColor == item && <Icon name='check' color={colors.primaryWhite} size={30}/>}</TouchableOpacity>
               )}
             />
           </View>
@@ -68,6 +69,7 @@ const ProductDetailsScreen = () => {
             <FlatList
               horizontal
               data={product.sizeAvailable}
+              contentContainerStyle={{flexWrap:'wrap'}}
               renderItem={({item}) => (
                 <TouchableOpacity
                   style={[
@@ -120,6 +122,14 @@ const styles = StyleSheet.create({
   colorSizeContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+  },
+  colorBox: {
+    borderWidth: 1,
+    height: 40,
+    width: 40,
+    marginHorizontal: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   sizeBox: {
     borderWidth: 1,

@@ -1,34 +1,27 @@
 import React from 'react';
-import {StyleSheet, Image, View, StatusBar} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {colors} from '../utils/theme';
-import HomeScreen from '../screens/HomeScreen';
-import {icons} from '../utils/icons';
-import MarketPlaceScreen from '../screens/MarketPlaceScreen';
 import WishList from '../screens/WishList';
 
-import Feather from 'react-native-vector-icons/Feather';
 import AiCamera from '../screens/AiCamera';
 import Wardrobe from '../screens/Wardrobe';
 import Profile from '../screens/Profile';
-import Filter from '../components/Filter';
-import Temp from '../components/Temp';
-import LogInScreen from '../screens/auth/LogInScreen';
-import SignUpScreen from '../screens/auth/SignUpScreen';
 import ProductDetailsScreen from '../screens/ProductDetailsScreen';
+import Icon from 'react-native-vector-icons/Feather';
+import LogInScreen from '../screens/auth/LogInScreen';
+import HomeScreen from '../screens/HomeScreen';
 
 const Tab = createBottomTabNavigator();
 
-const TabIcon = ({focused, icon}) => {
+const TabIcon = ({focused, iconName, screenName}) => {
   return (
-    <View style={[styles.iconStyles, focused && styles.iconStylesFocused]}>
-      <Image
-        source={focused ? icon.focused : icon.default}
-        style={{
-          width: 24,
-          height: 24,
-        }}
-      />
+    <View style={styles.tabContainer}>
+      <View
+        style={[styles.iconContainer, focused && styles.iconContainerFocused]}>
+        <Icon name={iconName} size={30} color={focused ? '#fff' : '#000'} />
+      </View>
+      <Text style={styles.tabBarText}>{screenName}</Text>
     </View>
   );
 };
@@ -44,10 +37,10 @@ const TabNavigator = () => {
       }}>
       <Tab.Screen
         name="Home"
-        component={ProductDetailsScreen}
+        component={HomeScreen}
         options={{
           tabBarIcon: ({focused, color, size}) => (
-            <TabIcon focused={focused} icon={icons.home} />
+            <TabIcon focused={focused} iconName={'home'} screenName={'Home'} />
           ),
         }}
       />
@@ -56,7 +49,11 @@ const TabNavigator = () => {
         component={WishList}
         options={{
           tabBarIcon: ({focused, color, size}) => (
-            <TabIcon focused={focused} icon={icons.wishlist} />
+            <TabIcon
+              focused={focused}
+              iconName={'heart'}
+              screenName={'Favorite'}
+            />
           ),
         }}
       />
@@ -65,7 +62,11 @@ const TabNavigator = () => {
         component={AiCamera}
         options={{
           tabBarIcon: ({focused}) => (
-            <TabIcon focused={focused} icon={icons.camera} />
+            <TabIcon
+              focused={focused}
+              iconName={'camera'}
+              screenName={'AICam'}
+            />
           ),
         }}
       />
@@ -74,7 +75,11 @@ const TabNavigator = () => {
         component={Wardrobe}
         options={{
           tabBarIcon: ({focused}) => (
-            <TabIcon focused={focused} icon={icons.cart} />
+            <TabIcon
+              focused={focused}
+              iconName={'shopping-cart'}
+              screenName={'Cart'}
+            />
           ),
         }}
       />
@@ -83,50 +88,40 @@ const TabNavigator = () => {
         component={Profile}
         options={{
           tabBarIcon: ({focused}) => (
-            <TabIcon focused={focused} icon={icons.profile} />
+            <TabIcon focused={focused} iconName={'user'} screenName={'Profile'}/>
           ),
         }}
       />
-      
     </Tab.Navigator>
   );
 };
 
 const styles = StyleSheet.create({
   tabBarStyle: {
-    height: 76,
-    paddingHorizontal: 10,
+    height: 80,
     position: 'absolute',
-    backgroundColor: colors.primaryWhite,
-    marginBottom: 10,
-    marginHorizontal: '5%',
+    backgroundColor: '#fff',
     elevation: 0,
+    /* paddingHorizontal: 10,
     borderTopWidth: 1,
     borderWidth: 1,
     borderRadius: 25,
     borderColor: colors.primaryGrey,
+    marginBottom: 10,
+    marginHorizontal: '5%', */
   },
-  /*   iconContainer: {
-    padding: 5,
-  }, */
-  iconStyles: {
-    borderColor: colors.primaryGrey,
+  tabContainer: {marginTop: 27, alignItems: 'center'},
+  iconContainer: {
+    width: 55,
+    height: 55,
     borderWidth: 1,
-    padding: 15,
-    borderRadius: 30,
-    top: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30  ,
+    borderColor: colors.primaryGrey,
   },
-  iconStylesFocused: {
-    borderColor: colors.primaryBlue,
-    backgroundColor: colors.primaryBlue,
-  },
+  iconContainerFocused: {backgroundColor: '#000', borderColor: '#000'},
+  tabBarText: {fontSize: 12, width: '100%', fontWeight: '500'},
 });
 
 export default TabNavigator;
-
-/* <Feather
-              name="home"
-              color="#000"
-              size={24}
-              style={[styles.iconStyles, focused && styles.iconStylesFocused]}
-            /> */

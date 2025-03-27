@@ -1,4 +1,11 @@
 export const icons ={
+    google: require('../../assets/icons/google.png'),
+    facebook: require('../../assets/icons/facebook.png'),
+    twitter: require('../../assets/icons/twitter.png'),
+
+
+
+
     home:{
     default: require('../../assets/icons/home.png'),
     focused:require('../../assets/icons/home-focused.png'),},
@@ -26,7 +33,6 @@ export const icons ={
     star:require('../../assets/icons/star.png'),
     plus:require('../../assets/icons/plus.png'),
     downArrow: require('../../assets/icons/down-arrow.png'),
-    google: require('../../assets/icons/google.png'),
     edit: require('../../assets/icons/edit.png'),
     rightArrow: require('../../assets/icons/right-arrow.png'),
     payment: require('../../assets/icons/payment.png'),

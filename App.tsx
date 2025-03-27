@@ -15,7 +15,7 @@ const App = () => {
   }, []);
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName="Tab">
+      <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName="LogInScreen">
         <Stack.Screen name='LogInScreen' component={LogInScreen}/>
         <Stack.Screen name='SignUpScreen' component={SignUpScreen}/>
         <Stack.Screen
@@ -23,7 +23,7 @@ const App = () => {
           component={TabNavigator}
           options={{animation: 'slide_from_bottom'}}></Stack.Screen>
       </Stack.Navigator>
-      <StatusBar backgroundColor={'#f2f1e6'} barStyle={'dark-content'} />
+      <StatusBar  barStyle={'light-content'} />
     </NavigationContainer>
   );
 };

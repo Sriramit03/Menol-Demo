@@ -43,11 +43,13 @@ export default FilterScrollView;
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 15,
+    marginVertical: 10,
+    
   },
   title: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: 'bold',
+    letterSpacing:3,
   },
   filterScrollView: {
     marginVertical: 15,
@@ -65,11 +67,12 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 16,
     fontWeight: 'medium',
+    letterSpacing:3,
   },
 
   selectedCategoryContainer: {
-    backgroundColor: colors.primaryBlue,
-    borderColor:colors.primaryBlue
+    backgroundColor:colors.primaryBlack,
+    borderColor:colors.primaryBlack
   },
 
   selectedCategoryText: {

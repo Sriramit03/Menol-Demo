@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     minWidth: 100,
     padding: 12,
+    justifyContent:'center'
   },
   buttonText: {
     fontSize: 16,

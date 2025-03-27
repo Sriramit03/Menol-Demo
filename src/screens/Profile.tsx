@@ -35,7 +35,7 @@ const Profile = () => {
           <Image
             source={images.profilePicture}
             style={styles.profileImage}
-            resizeMode="stretch"
+            resizeMode="cover"
           />
           <TouchableOpacity style={styles.editIconContainer}>
             <Image source={icons.edit} style={styles.editIcon} />

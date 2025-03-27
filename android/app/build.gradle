@@ -5,7 +5,7 @@ apply plugin: 'com.google.gms.google-services'
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
 
 project.ext.vectoricons = [
-    iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf' ] // Specify font files
+    iconFontNames: [ 'MaterialIcons.ttf', 'EvilIcons.ttf','Feather.ttf' ] // Specify font files
 ]
 
 /**

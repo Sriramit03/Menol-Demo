@@ -48,5 +48,11 @@
 		</array>
 		<key>UIViewControllerBasedStatusBarAppearance</key>
 		<false />
+		<key>UIAppFonts</key>
+		<array>
+			<string>Game-Of-Squids.ttf</string>
+		</array>
+
+
 	</dict>
 </plist>
