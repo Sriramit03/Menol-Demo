@@ -1,19 +1,17 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  StatusBar,
   TouchableOpacity,
   Image,
   TextInput,
   ScrollView,
   FlatList,
   Dimensions,
+  Alert,
 } from 'react-native';
 import {colors} from '../utils/theme';
-import {categoryImageArray, imageArray} from '../utils/imageArray';
-import ForYou from '../components/ForYou';
 import {fonts} from '../utils/fonts';
 import Icon from 'react-native-vector-icons/Feather';
 import FilterScrollView from '../components/FilterScrollView';
@@ -48,9 +46,24 @@ const products = [
   },
 ];
 
-const ProductCard = ({product}) => {
+const ProductCard = ({product, addItem, isInWishList,deleteItem}) => {
   return (
     <View style={productCardStyles.container}>
+      <View style={productCardStyles.heartContainer}>
+        {isInWishList(product) ? (
+          <TouchableOpacity
+            onPress={() => deleteItem(product.id)}
+            style={{padding: 5}}>
+            <Icon name="heart" size={24} color={'red'} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => addItem(product)}
+            style={{padding: 5}}>
+            <Icon name="heart" color={colors.primaryGrey} size={24} />
+          </TouchableOpacity>
+        )}
+      </View>
       <Image
         source={product.image}
         style={productCardStyles.image}
@@ -65,12 +78,34 @@ const ProductCard = ({product}) => {
 const App = () => {
   const [searchValue, setSearchValue] = React.useState('');
   const category = ['All', 'Jacket', 'Shirt', 'Trouser', 'Hoodie'];
+  const [wishListItems, setWishListItems] = useState<typeof products>([]);
+
+  useEffect(() => {
+    console.log(wishListItems);
+  }, [wishListItems]);
+
+  const addItem = item => {
+    if (!isInWishList(item)) setWishListItems(prev => [...prev, item]);
+    Alert.alert('Done', 'Product has been Added!');
+  };
+
+  const deleteItem = itemId => {
+    setWishListItems(currentItems =>
+      currentItems.filter(item => item.id !== itemId),
+    );
+    Alert.alert("Done","Item Deleted from the wishlist")
+  };
+
+  const isInWishList = product => {
+    return wishListItems.some(item => item.id === product.id);
+  };
+
   return (
     /* Outer Container for Home Screen */
     <ScrollView style={styles.container}>
       {/* Hedaer Text with mail icon */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>MENOL</Text>
+        <Text style={[styles.headerTitle]}>MENOL</Text>
         <View style={styles.headerOption}>
           <TouchableOpacity onPress={undefined} style={styles.mailContainer}>
             <Icon name="mail" size={25} />
@@ -107,7 +142,14 @@ const App = () => {
       <FlatList
         data={products}
         keyExtractor={item => item.id.toString()}
-        renderItem={({item}) => <ProductCard product={item} />}
+        renderItem={({item}) => (
+          <ProductCard
+            product={item}
+            addItem={addItem}
+            isInWishList={isInWishList}
+            deleteItem={deleteItem}
+          />
+        )}
         scrollEnabled={false}
       />
     </ScrollView>
@@ -122,10 +164,9 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    fontFamily: fonts.gameOfSquids,
     letterSpacing: 3,
     color: colors.primaryBlack,
+    fontFamily: fonts.gameOfSquids,
   },
   header: {
     flexDirection: 'row',
@@ -179,29 +220,36 @@ const styles = StyleSheet.create({
 
 const productCardStyles = StyleSheet.create({
   container: {
-    marginVertical:10,
+    marginVertical: 10,
+  },
+  heartContainer: {
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    top: 40,
+    zIndex: 999,
+    right: 10,
   },
   image: {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height / 2,
   },
-  name:{
-     textAlign:'center',
-     marginVertical:8,
-     backgroundColor:colors.primaryBlack,
-     color:colors.primaryWhite,
-     padding:10,
-     letterSpacing:3,
-     fontSize:20,
-     fontWeight:'200'
+  name: {
+    textAlign: 'center',
+    marginVertical: 8,
+    backgroundColor: colors.primaryBlack,
+    color: colors.primaryWhite,
+    padding: 10,
+    letterSpacing: 3,
+    fontSize: 20,
+    fontWeight: '200',
   },
-  description:{
-      fontSize:16,
-      letterSpacing:3,
-      fontWeight:'600',
-      lineHeight:24,
-      textAlign:'justify'
-  }
+  description: {
+    fontSize: 16,
+    letterSpacing: 3,
+    fontWeight: '600',
+    lineHeight: 24,
+    textAlign: 'justify',
+  },
 });
 
 export default App;

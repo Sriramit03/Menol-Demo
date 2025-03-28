@@ -1,3 +1,3 @@
 export const fonts ={
-    gameOfSquids:'Game Of Squids',
+    gameOfSquids:'Game-Of-Squids',
 }

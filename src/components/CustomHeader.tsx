@@ -2,12 +2,13 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {icons} from '../utils/icons';
 import {colors} from '../utils/theme';
+import Icon from 'react-native-vector-icons/Feather'
 
 const CustomHeader = ({title}) => {
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity style={styles.imageContainer}>
-        <Image source={icons.leftArrow} style={styles.arrowImage} />
+        <Icon name='arrow-left' size={24}/>
       </TouchableOpacity>
       <View style={styles.textContainer}>
         <Text style={styles.headerText}>{title}</Text>
@@ -42,6 +43,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 20,
-    fontWeight: '800',
+    fontWeight: 'bold',
+    letterSpacing:2.5,
   },
 });
