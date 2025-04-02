@@ -12,11 +12,13 @@ import React, {useState} from 'react';
 import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
 import {colors} from '../../utils/theme';
-import {googleLogin, signUp} from './fireBaseConfig';
+import {googleLogin, signUp} from '../../firebase/authConfig';
 import {icons} from '../../utils/icons';
 import Icon from 'react-native-vector-icons/Feather';
+import {useGlobalContext} from '../../context/GlobalProvider';
 
 const SignUpScreen = ({navigation}) => {
+  const {setUser} = useGlobalContext();
   const [formValues, setFormValues] = useState({
     name: '',
     email: '',
@@ -35,8 +37,13 @@ const SignUpScreen = ({navigation}) => {
       formValues.password.length >= 6
     ) {
       try {
-        await signUp(formValues.email, formValues.password);
-        Alert.alert('New Account Created Successful!');
+        const res = await signUp(formValues.email, formValues.password);
+        setUser({
+          name: res?.user.displayName,
+          email: res?.user.email,
+          uid: res.user.uid,
+        });
+        Alert.alert('Success', 'New Account Created Successful!');
         setFormValues({
           name: '',
           email: '',
@@ -59,6 +66,11 @@ const SignUpScreen = ({navigation}) => {
   const handleGoogleSignUp = async () => {
     const res = await googleLogin();
     if (!res) Alert.alert('Failure', 'Google Sign-Un Failed!');
+    setUser({
+      name: res?.user.displayName,
+      email: res?.user.email,
+      uid: res?.user.uid,
+    });
     Alert.alert(
       'Success',
       `Successfully Signed In as ${res?.user.displayName}`,
@@ -205,8 +217,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
   },
-  socialButton:{
-    padding:10,
+  socialButton: {
+    padding: 10,
   },
   Icon: {
     width: 40,
@@ -220,12 +232,12 @@ const styles = StyleSheet.create({
   },
   oldAccountText: {
     fontSize: 14,
-    letterSpacing:3
+    letterSpacing: 3,
   },
   logInText: {
     fontSize: 14,
     color: colors.primaryBlue,
-    letterSpacing:3,
+    letterSpacing: 3,
   },
 });
 export default SignUpScreen;

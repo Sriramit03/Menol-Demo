@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 import {
   View,
   Text,
@@ -14,51 +14,41 @@ import {
 import {colors} from '../utils/theme';
 import {fonts} from '../utils/fonts';
 import Icon from 'react-native-vector-icons/Feather';
-import FilterScrollView from '../components/FilterScrollView';
+import Icon2 from 'react-native-vector-icons/FontAwesome';
+import {products} from '../utils/products';
+import {
+  addToWishlist,
+  getWishlist,
+  removeFromWishlist,
+} from '../firebase/wishListConfig';
+import {useGlobalContext} from '../context/GlobalProvider';
+import Filter from '../components/Filter';
 
-const products = [
-  {
-    id: 3,
-    name: 'Black Leather Jacket',
-    brand: 'Allen Solly',
-    price: '₹ 800',
-    description:
-      'A classic staple for colder days, this rich brown woolen jacket combines warmth with refined style. Made from high-quality wool, it provides excellent insulation while maintaining breathability.',
-    image: require('../../assets/images/Jacket/Jacket3.jpg'),
-  },
-  {
-    id: 1,
-    name: 'Black Leather Jacket',
-    brand: 'Puma',
-    price: '₹ 600',
-    description:
-      'Crafted from premium genuine leather, this jacket offers a smooth texture, durability, and a perfect fit. Featuring a zippered front, classic lapel collar, and snug cuffs.',
-    image: require('../../assets/images/Jacket/Jacket1.jpg'),
-  },
-  {
-    id: 2,
-    name: 'White WoolenJacket',
-    brand: 'H & M',
-    price: '₹ 1000',
-    description:
-      'The minimalist design, structured fit, and button-up front make it a perfect blend of sophistication and warmth. Whether paired with jeans or a dress, this jacket exudes effortless charm and winter elegance.',
-    image: require('../../assets/images/Jacket/Jacket2.jpg'),
-  },
-];
 
-const ProductCard = ({product, addItem, isInWishList,deleteItem}) => {
+
+const ProductCard = ({
+  product,
+  addItem,
+  isInWishList,
+  deleteItem,
+}: {
+  product: any;
+  addItem: Function;
+  isInWishList: Function;
+  deleteItem: Function;
+}) => {
   return (
     <View style={productCardStyles.container}>
       <View style={productCardStyles.heartContainer}>
-        {isInWishList(product) ? (
+        {isInWishList(product.id) ? (
           <TouchableOpacity
             onPress={() => deleteItem(product.id)}
             style={{padding: 5}}>
-            <Icon name="heart" size={24} color={'red'} />
+            <Icon2 name="heart" size={24} color={'red'} />
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            onPress={() => addItem(product)}
+            onPress={() => addItem(product.id)}
             style={{padding: 5}}>
             <Icon name="heart" color={colors.primaryGrey} size={24} />
           </TouchableOpacity>
@@ -76,31 +66,75 @@ const ProductCard = ({product, addItem, isInWishList,deleteItem}) => {
 };
 
 const App = () => {
-  const [searchValue, setSearchValue] = React.useState('');
+  const [searchValue, setSearchValue] = useState('');
   const category = ['All', 'Jacket', 'Shirt', 'Trouser', 'Hoodie'];
-  const [wishListItems, setWishListItems] = useState<typeof products>([]);
+  const [wishListItems, setWishListItems] = useState<Number[]>([]);
+  const [filterVisible, setFilterVisible] = useState(false);
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'SET_FILTER':
+        console.log("Entered Into Dispatch Function! ");
+        return{
+          ... state,
+          brand:'Nike'
+        }
+  
+      case 'RESET_FILTERS':
+  
+      default:
+        return state;
+    }
+  };
+
+  const [state, dispatch] = useReducer(reducer, {
+    brand: 'All',
+    category: 'All',
+    sortBy: '',
+    price: 0,
+  });
+  const {user} = useGlobalContext();
 
   useEffect(() => {
-    console.log(wishListItems);
-  }, [wishListItems]);
+    console.log(state);
+  }, [state]);
 
-  const addItem = item => {
-    if (!isInWishList(item)) setWishListItems(prev => [...prev, item]);
-    Alert.alert('Done', 'Product has been Added!');
+  useEffect(() => {
+    getWishListItems();
+  }, []);
+
+
+
+
+  const getWishListItems = async () => {
+    setWishListItems(await getWishlist(user));
   };
 
-  const deleteItem = itemId => {
+  const addItem = async (productId: Number) => {
+    if (!isInWishList(productId)) {
+      const res = await addToWishlist(productId, user);
+      if (res) {
+        setWishListItems(prev => [...prev, productId]);
+        Alert.alert('Done', 'Product has been Added!');
+      }
+    }
+  };
+
+  const deleteItem = async (itemId: Number) => {
+    console.log('In delete!');
+    await removeFromWishlist(itemId, user);
+    console.log('After Calling removeFromWIshlist');
     setWishListItems(currentItems =>
-      currentItems.filter(item => item.id !== itemId),
+      currentItems.filter(item => item !== itemId),
     );
-    Alert.alert("Done","Item Deleted from the wishlist")
+    Alert.alert('Done', 'Item Deleted from the wishlist');
+  };
+  ``;
+
+  const isInWishList = (productId: Number) => {
+    return wishListItems.some(item => item === productId);
   };
 
-  const isInWishList = product => {
-    return wishListItems.some(item => item.id === product.id);
-  };
-
-  return (
+  return !filterVisible ? (
     /* Outer Container for Home Screen */
     <ScrollView style={styles.container}>
       {/* Hedaer Text with mail icon */}
@@ -128,16 +162,18 @@ const App = () => {
             onChange={e => setSearchValue(e)}
           />
         </View>
-        <TouchableOpacity style={styles.filterContainer}>
+        <TouchableOpacity
+          style={styles.filterContainer}
+          onPress={() => setFilterVisible(true)}>
           <Icon name="filter" size={26} />
         </TouchableOpacity>
       </View>
 
       {/* Horizontal ScrollView for Category */}
 
-      <View>
+      {/*       <View>
         <FilterScrollView title={'Categories'} data={category} />
-      </View>
+      </View> */}
 
       <FlatList
         data={products}
@@ -153,6 +189,10 @@ const App = () => {
         scrollEnabled={false}
       />
     </ScrollView>
+  ) : (
+    <Filter
+        filterVisibleFunc={setFilterVisible} state={state} dispatch={dispatch}
+    />
   );
 };
 

@@ -4,10 +4,10 @@ import {icons} from '../utils/icons';
 import {colors} from '../utils/theme';
 import Icon from 'react-native-vector-icons/Feather'
 
-const CustomHeader = ({title}) => {
+const CustomHeader = ({title,backFunc}) => {
   return (
     <View style={styles.headerContainer}>
-      <TouchableOpacity style={styles.imageContainer}>
+      <TouchableOpacity style={styles.imageContainer} onPress={()=>backFunc()}>
         <Icon name='arrow-left' size={24}/>
       </TouchableOpacity>
       <View style={styles.textContainer}>

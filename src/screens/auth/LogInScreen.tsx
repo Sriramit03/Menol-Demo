@@ -11,16 +11,17 @@ import FormField from '../../components/FormField';
 import CustomButton from '../../components/CustomButton';
 import {colors} from '../../utils/theme';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {googleLogin, logIn} from './fireBaseConfig';
+import {googleLogin, logIn} from '../../firebase/authConfig';
 import {icons} from '../../utils/icons';
-import Icon from 'react-native-vector-icons/Feather'
-
+import Icon from 'react-native-vector-icons/Feather';
+import {useGlobalContext} from '../../context/GlobalProvider';
 
 const LogInScreen = ({navigation}) => {
   const [formValues, setFormValues] = useState({
     name: '',
     password: '',
   });
+  const {setUser} = useGlobalContext();
 
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -29,7 +30,13 @@ const LogInScreen = ({navigation}) => {
       Alert.alert('Error', "Email or Password can't be Empty !");
     } else {
       try {
-        await logIn(formValues.name, formValues.password);
+        const result = await logIn(formValues.name, formValues.password);
+        console.log(result.user.email);
+        setUser({
+          name: result.user.displayName,
+          email: result.user.email,
+          uid: result.user.uid,
+        });
         Alert.alert('Success', `LogIn Successfully!`);
         setFormValues({
           name: '',
@@ -46,6 +53,11 @@ const LogInScreen = ({navigation}) => {
   const handleGoogleLogin = async () => {
     const res = await googleLogin();
     if (!res) Alert.alert('Failure', 'Google Sign-In Failed!');
+    setUser({
+      name: res?.user.displayName,
+      email: res?.user.email,
+      uid: res?.user.uid,
+    });
     Alert.alert(
       'Success',
       `Successfully Logged In as ${res?.user.displayName}`,
@@ -91,7 +103,9 @@ const LogInScreen = ({navigation}) => {
           <TouchableOpacity
             style={styles.rememberContainer}
             onPress={() => setRememberMe(!rememberMe)}>
-            <View style={styles.rememberBox}>{rememberMe && <Icon name='check' size={18}/>}</View>
+            <View style={styles.rememberBox}>
+              {rememberMe && <Icon name="check" size={18} />}
+            </View>
             <Text style={styles.rememberText}>Remember me</Text>
           </TouchableOpacity>
           <TouchableOpacity>
@@ -174,18 +188,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: 20,
     height: 20,
-    justifyContent:'center',
-    alignItems:'center'
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   rememberText: {
     letterSpacing: 3,
     fontSize: 12,
   },
 
-  forgotPasswordText:{
-    letterSpacing:3,
-    fontSize:12,
-    textDecorationLine:'underline',
+  forgotPasswordText: {
+    letterSpacing: 3,
+    fontSize: 12,
+    textDecorationLine: 'underline',
   },
 
   otherLogInText: {

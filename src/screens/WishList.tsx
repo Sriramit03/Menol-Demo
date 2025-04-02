@@ -2,63 +2,46 @@ import {
   Dimensions,
   FlatList,
   Image,
+  ImageSourcePropType,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import CustomHeader from '../components/CustomHeader';
 import {colors} from '../utils/theme';
 import Icon from 'react-native-vector-icons/Feather';
+import {getWishlist, removeFromWishlist} from '../firebase/wishListConfig';
+import {products} from '../utils/products';
+import {useGlobalContext} from '../context/GlobalProvider';
 
-const products = [
-  {
-    id: 3,
-    name: 'Long Jacket',
-    brand: 'Allen Solly',
-    price: '₹ 800',
-    description:
-      'Stay stylish and cozy with this long jacket, designed for maximum warmth and elegance. Its tailored fit and high-quality material make it a perfect companion for chilly days.',
-    image: require('../../assets/images/wishList/long-jacket.jpg'),
-  },
-  {
-    id: 1,
-    name: 'Linen Shirt',
-    brand: 'Puma',
-    price: '₹ 600',
-    description:
-      'Made from breathable and lightweight linen, this shirt is perfect for warm weather. Its relaxed fit and classic button-down style make it a versatile choice for any occasion.',
-    image: require('../../assets/images/wishList/shirt.jpg'),
-  },
-  {
-    id: 2,
-    name: 'Winter Polo',
-    brand: 'H & M',
-    price: '₹ 1000',
-    description:
-      'A refined polo shirt designed for the winter season, featuring soft wool-blend fabric for extra warmth. Its sleek and minimalistic design pairs effortlessly with both casual and formal outfits.',
-    image: require('../../assets/images/wishList/polo1.jpg'),
-  },
-  {
-    id: 4,
-    name: 'Casual Polo',
-    brand: 'Nike',
-    price: '₹ 750',
-    description:
-      'A must-have for every wardrobe, this casual polo shirt offers comfort and style in equal measure. Made from premium cotton, it ensures breathability and a relaxed fit for all-day wear.',
-    image: require('../../assets/images/wishList/polo2.jpg'),
-  },
-];
+interface Product {
+  id: Number;
+  name: String;
+  brand: String;
+  price: String;
+  description: String;
+  image: ImageSourcePropType;
+}
 
-const WishListProductCard = ({product}) => {
+const WishListProductCard = ({
+  product,
+  removeFunc,
+}: {
+  product: Product;
+  removeFunc: Function;
+}) => {
   return (
     <View style={productStyles.container}>
       <View
         style={{flexDirection: 'row', justifyContent: 'flex-end', width: 200}}>
-        <TouchableOpacity style={productStyles.cancelContainer}>
+        <TouchableOpacity
+          style={productStyles.cancelContainer}
+          onPress={() => removeFunc(product.id)}>
           <Icon name="x" size={24} />
         </TouchableOpacity>
       </View>
@@ -75,15 +58,62 @@ const WishListProductCard = ({product}) => {
 };
 
 const WishList = () => {
+  const {user} = useGlobalContext();
+  const [wishListProducts, setWishListProducts] = useState<Product[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    getWishListProducts();
+    console.log(wishListProducts);
+  }, []);
+
+  const getWishListProducts = async () => {
+    setRefreshing(true);
+    const wishListIds = await getWishlist(user);
+    setWishListProducts(
+      products.filter(product => wishListIds.includes(product.id)),
+    );
+    setRefreshing(false);
+  };
+
+  const deleteFromWishList = async (productId: Number) => {
+    console.log('Delete Function Called!');
+    await removeFromWishlist(productId, user);
+    setWishListProducts(prev =>
+      prev.filter(product => product.id != productId),
+    );
+    console.log('after deletion WIshList', wishListProducts);
+  };
+
   return (
     <SafeAreaView>
       <CustomHeader title={'Wishlist'} />
       <Text style={styles.context}>See your favorite products here</Text>
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={getWishListProducts}
+            colors={[colors.primaryBlack]}
+          />
+        }>
         <FlatList
-          data={products}
+          data={wishListProducts}
           keyExtractor={item => item.id.toString()}
-          renderItem={({item}) => <WishListProductCard product={item} />}
+          renderItem={({item}) => (
+            <WishListProductCard
+              product={item}
+              removeFunc={deleteFromWishList}
+            />
+          )}
+          ListEmptyComponent={
+            <View style={styles.emptyListContainer}>
+              <Text style={styles.emptyListText}>
+                No Items Present in WishList !
+              </Text>
+            </View>
+          }
           scrollEnabled={false}
         />
       </ScrollView>
@@ -96,10 +126,24 @@ export default WishList;
 const styles = StyleSheet.create({
   container: {
     marginBottom: 200,
+    paddingTop:30,
   },
   context: {
     textAlign: 'center',
     letterSpacing: 3,
+  },
+  emptyListContainer:{
+    marginHorizontal:'5%',
+    justifyContent:'center',
+    alignItems:'center',
+    height:Dimensions.get('window').height/2,
+  },
+  emptyListText: {
+    textAlign: 'center',
+    fontSize: 20,
+    letterSpacing: 3,
+    marginVertical: 10,
+    fontWeight: '700',
   },
 });
 

@@ -6,51 +6,94 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 import {icons} from '../utils/icons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {colors} from '../utils/theme';
-import FilterScrollView from './FilterScrollView';
 import Slider from '@react-native-community/slider';
+import CustomHeader from './CustomHeader';
 
-const Filter = () => {
+const Brand = ['All', 'Nike', 'Adidas', 'H&M', 'Raymond', 'Allen Solly'];
+
+const Category = [
+  'All',
+  'Shirt',
+  'T-Shirt',
+  'Trousers',
+  'Shorts',
+  'Sneakers',
+  'Sunglasses',
+  'Track Pants',
+];
+
+const sortBy = [
+  'Recent',
+  'Popular',
+  'Price (highest first)',
+  'Price (lowest price)',
+  'Ratings',
+];
+
+
+export const FilterScrollView = ({title, data, value, setValue}) => {
+  useEffect(()=>{
+    console.log(setValue);
+  },[])
+  return (
+    <View style={filterScrollView.container}>
+      <Text style={filterScrollView.title}>{title}</Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={filterScrollView.filterScrollView}>
+        {data.map((item, index) => (
+          <TouchableOpacity
+            style={[
+              filterScrollView.categoryContainer,
+              value === item && filterScrollView.selectedCategoryContainer,
+            ]}
+            key={index}
+            onPress={() => setValue({type:"SET_FILTER",payload:{'brand':item}})}>
+            <Text
+              style={[
+                filterScrollView.categoryText,
+                value === item && filterScrollView.selectedCategoryText,
+              ]}>
+              {item}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
+  );
+};
+
+const Filter = ({filterVisibleFunc, state,dispatch}) => {
   const [price, setPrice] = useState(0);
 
-  const Brand = ['All', 'Nike', 'Adidas', 'H&M', 'Raymond', 'Allen Solly'];
+  const backButton = () => {
+    filterVisibleFunc(false);
+  };
 
-  const Product = [
-    'Shirt',
-    'T-Shirt',
-    'Trousers',
-    'Shorts',
-    'Sneakers',
-    'Sunglasses',
-    'Track Pants',
-  ];
-
-  const Type = ['Casual', 'Oversized', 'Party', 'Formal'];
-
-  const sortBy = [
-    'Recent',
-    'Popular',
-    'Price (highest first)',
-    'Price (lowest price)',
-    'Ratings',
-  ];
   return (
     <SafeAreaView style={{height: 'auto'}}>
-      <View style={[styles.headerContainer]}>
-        <TouchableOpacity style={styles.headerIconContainer}>
-          <Image source={icons.leftArrow} style={styles.headerIcon} />
-        </TouchableOpacity>
-        <View style={[styles.textContainer]}>
-          <Text style={styles.headerText}>Filter</Text>
-        </View>
-      </View>
+      <CustomHeader title={'Filter'} backFunc={backButton} />
       <ScrollView style={styles.filterContainer}>
-        <FilterScrollView title={'Brands'} data={Brand} />
-        <FilterScrollView title={'Products'} data={Product} />
-        <FilterScrollView title={'Sort by'} data={sortBy} />
+        <FilterScrollView
+          title={'Brands'}
+          data={Brand}
+          value={state.brand}
+          setValue={dispatch} key={"brand"}        />
+        <FilterScrollView
+          title={'Categories'}
+          data={Category}
+          value={state.category}
+          setValue={dispatch} key={"category"}        />
+        <FilterScrollView
+          title={'Sort by'}
+          data={sortBy}
+          value={state.sortBy}
+          setValue={dispatch} key={"sortBy"}        />
         <View>
           <Text style={styles.Label}>Price Range</Text>
           <View style={styles.sliderContainer}>
@@ -58,9 +101,9 @@ const Filter = () => {
             <Slider
               style={styles.slider}
               minimumValue={0}
-              maximumValue={100}
-              step={10}
-              value={price}
+              maximumValue={10000}
+              step={100}
+              value={state.price}
               minimumTrackTintColor={colors.primaryBlue}
               maximumTrackTintColor="#676767"
               thumbTintColor="#007AFF"
@@ -73,7 +116,7 @@ const Filter = () => {
           <Text style={styles.Label}>Reviews</Text>
           <View style={styles.reviewContainer}>
             <TouchableOpacity style={styles.review}>
-              <Text style ={styles.buttonText}>Above 4.5</Text>
+              <Text style={styles.buttonText}>Above 4.5</Text>
               <Image source={icons.star} style={styles.reviewIcon} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.review}>
@@ -84,10 +127,13 @@ const Filter = () => {
         </View>
         <View style={styles.bottomButtonsContainer}>
           <TouchableOpacity style={styles.bottomButtons}>
-            <Text>Reset Filter</Text>
+            <Text
+              style={[styles.bottomButtonText, {color: colors.primaryBlack}]}>
+              Reset Filter
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.bottomButtons,styles.applyButton]}>
-            <Text style={{color:colors.primaryWhite}}>Apply</Text>
+          <TouchableOpacity style={[styles.bottomButtons, styles.applyButton]}>
+            <Text style={[styles.bottomButtonText]}>Apply</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -142,8 +188,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginLeft: 15,
   },
-  buttonText:{
-   fontSize:16,
+  buttonText: {
+    fontSize: 16,
   },
   reviewContainer: {
     paddingVertical: 15,
@@ -163,23 +209,67 @@ const styles = StyleSheet.create({
     height: 20,
   },
   bottomButtonsContainer: {
-    paddingVertical:15,
+    paddingVertical: 15,
     borderTopWidth: 1,
     borderColor: colors.primaryGrey,
-    flexDirection:'row',
-    justifyContent:'space-between',
-    paddingHorizontal:20,
-    paddingBottom:200
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingBottom: 200,
   },
   bottomButtons: {
-    alignItems:'center',
-    width:100,
-    padding:10,
-    borderWidth:1,
-    borderColor:colors.primaryGrey,
-    borderRadius:25,
+    alignItems: 'center',
+    minWidth: 100,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: colors.primaryGrey,
+    borderRadius: 25,
   },
-  applyButton:{
-    backgroundColor:colors.primaryBlue,
-  }
+  bottomButtonText: {
+    letterSpacing: 3,
+    color: colors.primaryWhite,
+  },
+  applyButton: {
+    backgroundColor: colors.primaryBlack,
+  },
+});
+
+
+const filterScrollView = StyleSheet.create({
+  container: {
+    marginVertical: 10,
+    
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    letterSpacing:3,
+  },
+  filterScrollView: {
+    marginVertical: 10,
+    gap: 20,
+  },
+  categoryContainer: {
+    borderColor: colors.primaryGrey,
+    minWidth: 86,
+    borderWidth: 1,
+    borderRadius: 30,
+    padding: 10,
+    flex: 1,
+    alignItems: 'center',
+  },
+  categoryText: {
+    fontSize: 14,
+    fontWeight: 'medium',
+    letterSpacing:3,
+  },
+
+  selectedCategoryContainer: {
+    backgroundColor:colors.primaryBlack,
+    borderColor:colors.primaryBlack
+  },
+
+  selectedCategoryText: {
+    color: colors.primaryWhite,
+  },
 });
