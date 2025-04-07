@@ -2,38 +2,48 @@ import {
   Dimensions,
   FlatList,
   Image,
+  ImageSourcePropType,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import CustomHeader from '../components/CustomHeader';
 import {colors} from '../utils/theme';
 import CustomButton from '../components/CustomButton';
 import Icon from 'react-native-vector-icons/Feather'
 
-const ProductDetailsScreen = () => {
-  const product = {
-    id: 1,
-    name: 'Black Jacket',
-    brand: 'H&M',
-    price: '₹ 600',
-    description:
-      'Luxury jackets are made from high-quality materials and are often associated with luxury brands',
-    sizeAvailable: ['S', 'M', 'L', 'XL'],
-    color: ['black', 'green'],
-    image: require('../../assets/images/Jacket.jpeg'),
-  };
+
+interface Product {
+  id: Number;
+  name: string;
+  brand: string;
+  price: Number;
+  category: string;
+  type: string;
+  sizeAvailable:Array<string>;
+  colorAvailable:Array<string>;
+  description: string;
+  image: ImageSourcePropType;
+}
+
+
+const ProductDetailsScreen = ({route,navigation}) => {
+  const {product} = route.params;
+
+  useEffect(()=>{
+   console.log(product);
+  },)
 
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
 
   return (
     <SafeAreaView style={styles.container}>
-      <CustomHeader title={'Product Details'} />
+      <CustomHeader title={'Product Details'} backFunc={()=> navigation.goBack()}/>
       <ScrollView>
         <View>
           <Image
@@ -51,7 +61,7 @@ const ProductDetailsScreen = () => {
             <Text style={styles.header}> Color</Text>
             <FlatList
               horizontal
-              data={product.color}
+              data={product.colorAvailable}
               renderItem={({item}) => (
                 <TouchableOpacity
                   style={[
@@ -60,7 +70,7 @@ const ProductDetailsScreen = () => {
                       backgroundColor: item,
                     },
                     styles.colorBox,
-                  ]} onPress={()=>setSelectedColor(item)}>{selectedColor == item && <Icon name='check' color={colors.primaryWhite} size={30}/>}</TouchableOpacity>
+                  ]} onPress={()=>setSelectedColor(item)}>{selectedColor == item && <Icon name='check' color={colors.primaryGrey} size={30}/>}</TouchableOpacity>
               )}
             />
           </View>
@@ -111,7 +121,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   container: {
-    marginBottom: 200,
+    marginBottom: 0,
   },
   header: {
     fontSize: 16,

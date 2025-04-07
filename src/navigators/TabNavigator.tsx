@@ -11,6 +11,7 @@ import ProductDetailsScreen from '../screens/ProductDetailsScreen';
 import Icon from 'react-native-vector-icons/Feather';
 import LogInScreen from '../screens/auth/LogInScreen';
 import HomeScreen from '../screens/HomeScreen';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Tab = createBottomTabNavigator();
 
@@ -30,68 +31,75 @@ const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarHideOnKeyboard: true,
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: styles.tabBarStyle,
       }}>
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          tabBarIcon: ({focused, color, size}) => (
-            <TabIcon focused={focused} iconName={'home'} screenName={'Home'} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="WishList"
-        component={WishList}
-        options={{
-          tabBarIcon: ({focused, color, size}) => (
-            <TabIcon
-              focused={focused}
-              iconName={'heart'}
-              screenName={'Favorite'}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="AiCamera"
-        component={AiCamera}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <TabIcon
-              focused={focused}
-              iconName={'camera'}
-              screenName={'AICam'}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Wardrobe"
-        component={Wardrobe}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <TabIcon
-              focused={focused}
-              iconName={'shopping-cart'}
-              screenName={'Cart'}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <TabIcon focused={focused} iconName={'user'} screenName={'Profile'}/>
-          ),
-        }}
-      />
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            tabBarIcon: ({focused, color, size}) => (
+              <TabIcon
+                focused={focused}
+                iconName={'home'}
+                screenName={'Home'}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="WishList"
+          component={WishList}
+          options={{
+            tabBarIcon: ({focused, color, size}) => (
+              <TabIcon
+                focused={focused}
+                iconName={'heart'}
+                screenName={'Favorite'}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="AiCamera"
+          component={AiCamera}
+          options={{
+            tabBarIcon: ({focused}) => (
+              <TabIcon
+                focused={focused}
+                iconName={'camera'}
+                screenName={'AICam'}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Wardrobe"
+          component={Wardrobe}
+          options={{
+            tabBarIcon: ({focused}) => (
+              <TabIcon
+                focused={focused}
+                iconName={'shopping-cart'}
+                screenName={'Cart'}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            tabBarIcon: ({focused}) => (
+              <TabIcon
+                focused={focused}
+                iconName={'user'}
+                screenName={'Profile'}
+              />
+            ),
+          }}
+        />
     </Tab.Navigator>
   );
 };
@@ -117,7 +125,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 30  ,
+    borderRadius: 30,
     borderColor: colors.primaryGrey,
   },
   iconContainerFocused: {backgroundColor: '#000', borderColor: '#000'},

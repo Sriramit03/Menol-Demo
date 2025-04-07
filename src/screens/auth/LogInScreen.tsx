@@ -15,6 +15,7 @@ import {googleLogin, logIn} from '../../firebase/authConfig';
 import {icons} from '../../utils/icons';
 import Icon from 'react-native-vector-icons/Feather';
 import {useGlobalContext} from '../../context/GlobalProvider';
+import LoadingModal from '../../components/LoadingModal';
 
 const LogInScreen = ({navigation}) => {
   const [formValues, setFormValues] = useState({
@@ -22,6 +23,7 @@ const LogInScreen = ({navigation}) => {
     password: '',
   });
   const {setUser} = useGlobalContext();
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -30,8 +32,9 @@ const LogInScreen = ({navigation}) => {
       Alert.alert('Error', "Email or Password can't be Empty !");
     } else {
       try {
+        setIsModalVisible(true);
         const result = await logIn(formValues.name, formValues.password);
-        console.log(result.user.email);
+        setIsModalVisible(false);
         setUser({
           name: result.user.displayName,
           email: result.user.email,
@@ -44,31 +47,39 @@ const LogInScreen = ({navigation}) => {
         });
         navigation.replace('Tab');
       } catch (err) {
+        setIsModalVisible(false);
         Alert.alert('Error', 'Invalid Credentials');
         console.log(err);
-      }
+      } 
     }
   };
 
   const handleGoogleLogin = async () => {
+    setIsModalVisible(true);
     const res = await googleLogin();
-    if (!res) Alert.alert('Failure', 'Google Sign-In Failed!');
-    setUser({
-      name: res?.user.displayName,
-      email: res?.user.email,
-      uid: res?.user.uid,
-    });
-    Alert.alert(
-      'Success',
-      `Successfully Logged In as ${res?.user.displayName}`,
-      [
-        {
-          text: 'Ok',
-          onPress: () => navigation.replace('Tab'),
-        },
-      ],
-      {cancelable: false},
-    );
+    setIsModalVisible(false);
+    if (!res) {
+      Alert.alert('Failure', 'Google Sign-In Failed!');
+    } else {
+      setUser({
+        name: res?.user.displayName,
+        email: res?.user.email,
+        uid: res?.user.uid,
+      });
+      Alert.alert(
+        'Success',
+        `Successfully Logged In as ${res?.user.displayName}`,
+        [
+          {
+            text: 'Ok',
+            onPress: () => {
+              navigation.replace('Tab');
+            },
+          },
+        ],
+        {cancelable: false},
+      );
+    }
   };
 
   const newAccountFunc = () => {
@@ -76,6 +87,7 @@ const LogInScreen = ({navigation}) => {
   };
   return (
     <SafeAreaView>
+      <LoadingModal visible={isModalVisible} />
       <View style={styles.container}>
         <Text style={styles.signUpHeader}>Sign In</Text>
         <Text style={styles.normalText}>

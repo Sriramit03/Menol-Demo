@@ -16,27 +16,31 @@ import CustomHeader from '../components/CustomHeader';
 import {colors} from '../utils/theme';
 import Icon from 'react-native-vector-icons/Feather';
 import {getWishlist, removeFromWishlist} from '../firebase/wishListConfig';
-import {products} from '../utils/products';
+import {Products} from '../utils/products';
 import {useGlobalContext} from '../context/GlobalProvider';
 
 interface Product {
   id: Number;
-  name: String;
-  brand: String;
-  price: String;
-  description: String;
+  name: string;
+  brand: string;
+  price: Number;
+  category: string;
+  type: string;
+  description: string;
   image: ImageSourcePropType;
 }
 
 const WishListProductCard = ({
   product,
   removeFunc,
+  navigationFunc,
 }: {
   product: Product;
   removeFunc: Function;
+  navigationFunc:Function
 }) => {
   return (
-    <View style={productStyles.container}>
+    <TouchableOpacity style={productStyles.container} onPress={() => navigationFunc(product)}>
       <View
         style={{flexDirection: 'row', justifyContent: 'flex-end', width: 200}}>
         <TouchableOpacity
@@ -53,11 +57,11 @@ const WishListProductCard = ({
       <TouchableOpacity style={productStyles.textContainer}>
         <Text style={productStyles.text}>{product.name}</Text>
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 };
 
-const WishList = () => {
+const WishList = ({navigation}) => {
   const {user} = useGlobalContext();
   const [wishListProducts, setWishListProducts] = useState<Product[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -71,7 +75,7 @@ const WishList = () => {
     setRefreshing(true);
     const wishListIds = await getWishlist(user);
     setWishListProducts(
-      products.filter(product => wishListIds.includes(product.id)),
+      Products.filter(product => wishListIds.includes(product.id)),
     );
     setRefreshing(false);
   };
@@ -85,9 +89,17 @@ const WishList = () => {
     console.log('after deletion WIshList', wishListProducts);
   };
 
+
+    /* Navigation function to Product Details Screen */
+    const navigateToProductDetails = (product: any) => {
+      navigation.navigate('ProductDetails', {
+        product: product,
+      });
+    };
+
   return (
     <SafeAreaView>
-      <CustomHeader title={'Wishlist'} />
+      <CustomHeader title={'Wishlist'} backFunc={undefined} />
       <Text style={styles.context}>See your favorite products here</Text>
       <ScrollView
         style={styles.container}
@@ -105,6 +117,7 @@ const WishList = () => {
             <WishListProductCard
               product={item}
               removeFunc={deleteFromWishList}
+              navigationFunc={navigateToProductDetails}
             />
           )}
           ListEmptyComponent={
@@ -126,17 +139,16 @@ export default WishList;
 const styles = StyleSheet.create({
   container: {
     marginBottom: 200,
-    paddingTop:30,
   },
   context: {
     textAlign: 'center',
     letterSpacing: 3,
   },
-  emptyListContainer:{
-    marginHorizontal:'5%',
-    justifyContent:'center',
-    alignItems:'center',
-    height:Dimensions.get('window').height/2,
+  emptyListContainer: {
+    marginHorizontal: '5%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: Dimensions.get('window').height / 2,
   },
   emptyListText: {
     textAlign: 'center',
@@ -149,7 +161,7 @@ const styles = StyleSheet.create({
 
 const productStyles = StyleSheet.create({
   container: {
-    marginVertical: 15,
+    marginBottom: 10,
     marginHorizontal: 20,
     alignItems: 'center',
   },
@@ -171,7 +183,7 @@ const productStyles = StyleSheet.create({
     backgroundColor: colors.primaryBlack,
     width: 200,
     padding: 10,
-    marginVertical: 5,
+    marginTop: 5,
   },
   text: {
     color: colors.primaryWhite,

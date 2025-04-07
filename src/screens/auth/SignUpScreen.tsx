@@ -16,6 +16,7 @@ import {googleLogin, signUp} from '../../firebase/authConfig';
 import {icons} from '../../utils/icons';
 import Icon from 'react-native-vector-icons/Feather';
 import {useGlobalContext} from '../../context/GlobalProvider';
+import LoadingModal from '../../components/LoadingModal';
 
 const SignUpScreen = ({navigation}) => {
   const {setUser} = useGlobalContext();
@@ -25,7 +26,7 @@ const SignUpScreen = ({navigation}) => {
     password: '',
     confirmPassword: '',
   });
-
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
   const handleSignUp = async () => {
@@ -37,7 +38,9 @@ const SignUpScreen = ({navigation}) => {
       formValues.password.length >= 6
     ) {
       try {
+        setIsModalVisible(true);
         const res = await signUp(formValues.email, formValues.password);
+        setIsModalVisible(false);
         setUser({
           name: res?.user.displayName,
           email: res?.user.email,
@@ -64,24 +67,29 @@ const SignUpScreen = ({navigation}) => {
   };
 
   const handleGoogleSignUp = async () => {
+    setIsModalVisible(true);
     const res = await googleLogin();
-    if (!res) Alert.alert('Failure', 'Google Sign-Un Failed!');
-    setUser({
-      name: res?.user.displayName,
-      email: res?.user.email,
-      uid: res?.user.uid,
-    });
-    Alert.alert(
-      'Success',
-      `Successfully Signed In as ${res?.user.displayName}`,
-      [
-        {
-          text: 'Ok',
-          onPress: () => navigation.replace('Tab'),
-        },
-      ],
-      {cancelable: false},
-    );
+    setIsModalVisible(false);
+    if (!res) {
+      Alert.alert('Failure', 'Google Sign-Un Failed!');
+    } else {
+      setUser({
+        name: res?.user.displayName,
+        email: res?.user.email,
+        uid: res?.user.uid,
+      });
+      Alert.alert(
+        'Success',
+        `Successfully Signed In as ${res?.user.displayName}`,
+        [
+          {
+            text: 'Ok',
+            onPress: () => navigation.replace('Tab'),
+          },
+        ],
+        {cancelable: false},
+      );
+    }
   };
 
   const oldAccountFunc = () => {
@@ -89,6 +97,7 @@ const SignUpScreen = ({navigation}) => {
   };
   return (
     <SafeAreaView>
+      <LoadingModal visible={isModalVisible}/>
       <ScrollView>
         <View style={styles.container}>
           <Text style={styles.welcomeText}>New Account</Text>

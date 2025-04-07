@@ -2,16 +2,16 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useReducer, useState} from 'react';
+import React from 'react';
 import {icons} from '../utils/icons';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {colors} from '../utils/theme';
 import Slider from '@react-native-community/slider';
 import CustomHeader from './CustomHeader';
+import Icon from 'react-native-vector-icons/Feather';
 
 const Brand = ['All', 'Nike', 'Adidas', 'H&M', 'Raymond', 'Allen Solly'];
 
@@ -26,6 +26,8 @@ const Category = [
   'Track Pants',
 ];
 
+const Type = ['Casual', 'Party-Wear', 'Formal', 'Sports'];
+
 const sortBy = [
   'Recent',
   'Popular',
@@ -34,11 +36,7 @@ const sortBy = [
   'Ratings',
 ];
 
-
-export const FilterScrollView = ({title, data, value, setValue}) => {
-  useEffect(()=>{
-    console.log(setValue);
-  },[])
+export const FilterScrollView = ({title, data, value, setValue, keyValue}) => {
   return (
     <View style={filterScrollView.container}>
       <Text style={filterScrollView.title}>{title}</Text>
@@ -53,7 +51,12 @@ export const FilterScrollView = ({title, data, value, setValue}) => {
               value === item && filterScrollView.selectedCategoryContainer,
             ]}
             key={index}
-            onPress={() => setValue({type:"SET_FILTER",payload:{'brand':item}})}>
+            onPress={() =>
+              setValue({
+                type: 'SET_FILTER',
+                payload: {type: keyValue, value: item},
+              })
+            }>
             <Text
               style={[
                 filterScrollView.categoryText,
@@ -68,46 +71,63 @@ export const FilterScrollView = ({title, data, value, setValue}) => {
   );
 };
 
-const Filter = ({filterVisibleFunc, state,dispatch}) => {
-  const [price, setPrice] = useState(0);
-
+const Filter = ({filterVisibleFunc, state, dispatch, filterFunc}) => {
   const backButton = () => {
     filterVisibleFunc(false);
   };
+
 
   return (
     <SafeAreaView style={{height: 'auto'}}>
       <CustomHeader title={'Filter'} backFunc={backButton} />
       <ScrollView style={styles.filterContainer}>
         <FilterScrollView
-          title={'Brands'}
+          title={'Brand'}
           data={Brand}
           value={state.brand}
-          setValue={dispatch} key={"brand"}        />
+          setValue={dispatch}
+          keyValue={'brand'}
+        />
         <FilterScrollView
-          title={'Categories'}
+          title={'Category'}
           data={Category}
           value={state.category}
-          setValue={dispatch} key={"category"}        />
+          setValue={dispatch}
+          keyValue={'category'}
+        />
+        <FilterScrollView
+          title={'Type'}
+          data={Type}
+          value={state.type}
+          setValue={dispatch}
+          keyValue={'type'}
+        />
         <FilterScrollView
           title={'Sort by'}
           data={sortBy}
           value={state.sortBy}
-          setValue={dispatch} key={"sortBy"}        />
+          setValue={dispatch}
+          keyValue={'sortBy'}
+        />
         <View>
           <Text style={styles.Label}>Price Range</Text>
           <View style={styles.sliderContainer}>
-            <Text style={styles.price}>{price}</Text>
+            <Text style={styles.price}>₹ {state.price}</Text>
             <Slider
               style={styles.slider}
               minimumValue={0}
               maximumValue={10000}
-              step={100}
+              step={500}
               value={state.price}
-              minimumTrackTintColor={colors.primaryBlue}
+              minimumTrackTintColor={colors.primaryBlack}
               maximumTrackTintColor="#676767"
-              thumbTintColor="#007AFF"
-              onValueChange={value => setPrice(value)}
+              thumbTintColor={colors.primaryBlack}
+              onValueChange={value =>
+                dispatch({
+                  type: 'SET_FILTER',
+                  payload: {type: 'price', value},
+                })
+              }
             />
           </View>
         </View>
@@ -117,22 +137,24 @@ const Filter = ({filterVisibleFunc, state,dispatch}) => {
           <View style={styles.reviewContainer}>
             <TouchableOpacity style={styles.review}>
               <Text style={styles.buttonText}>Above 4.5</Text>
-              <Image source={icons.star} style={styles.reviewIcon} />
+              <Icon name="star" color={'#f7d018'} size={24} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.review}>
               <Text>Above 3.5</Text>
-              <Image source={icons.star} style={styles.reviewIcon} />
+              <Icon name="star" color={'#f7d018'} size={24} />
             </TouchableOpacity>
           </View>
         </View>
         <View style={styles.bottomButtonsContainer}>
-          <TouchableOpacity style={styles.bottomButtons}>
+          <TouchableOpacity
+            style={styles.bottomButtons}
+            onPress={() => dispatch({type: 'RESET_FILTERS'})}>
             <Text
               style={[styles.bottomButtonText, {color: colors.primaryBlack}]}>
               Reset Filter
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.bottomButtons, styles.applyButton]}>
+          <TouchableOpacity style={[styles.bottomButtons, styles.applyButton]} onPress={() => filterFunc()}>
             <Text style={[styles.bottomButtonText]}>Apply</Text>
           </TouchableOpacity>
         </View>
@@ -181,7 +203,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   slider: {
-    width: 320,
+    width: '80%',
   },
   price: {
     fontSize: 16,
@@ -234,16 +256,14 @@ const styles = StyleSheet.create({
   },
 });
 
-
 const filterScrollView = StyleSheet.create({
   container: {
     marginVertical: 10,
-    
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    letterSpacing:3,
+    letterSpacing: 3,
   },
   filterScrollView: {
     marginVertical: 10,
@@ -261,12 +281,12 @@ const filterScrollView = StyleSheet.create({
   categoryText: {
     fontSize: 14,
     fontWeight: 'medium',
-    letterSpacing:3,
+    letterSpacing: 3,
   },
 
   selectedCategoryContainer: {
-    backgroundColor:colors.primaryBlack,
-    borderColor:colors.primaryBlack
+    backgroundColor: colors.primaryBlack,
+    borderColor: colors.primaryBlack,
   },
 
   selectedCategoryText: {
