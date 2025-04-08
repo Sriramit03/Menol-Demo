@@ -1,4 +1,5 @@
 import {
+  Alert,
   Dimensions,
   FlatList,
   Image,
@@ -9,13 +10,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import CustomHeader from '../components/CustomHeader';
 import {colors} from '../utils/theme';
 import CustomButton from '../components/CustomButton';
-import Icon from 'react-native-vector-icons/Feather'
-
+import Icon from 'react-native-vector-icons/Feather';
+import {useGlobalContext} from '../context/GlobalProvider';
+import {addToCart} from '../firebase/cartConfig';
 
 interface Product {
   id: Number;
@@ -24,27 +26,33 @@ interface Product {
   price: Number;
   category: string;
   type: string;
-  sizeAvailable:Array<string>;
-  colorAvailable:Array<string>;
+  sizeAvailable: Array<string>;
+  colorAvailable: Array<string>;
   description: string;
   image: ImageSourcePropType;
 }
 
-
-const ProductDetailsScreen = ({route,navigation}) => {
+const ProductDetailsScreen = ({route, navigation}) => {
   const {product} = route.params;
-
-  useEffect(()=>{
-   console.log(product);
-  },)
-
+  const screenWidth = Dimensions.get('window').width;
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
+  const {user} = useGlobalContext();
+
+  const handleCartAddition = async productId => {
+    const res = await addToCart(productId, user);
+    if (res) {
+      Alert.alert('Done', 'Item Successfully Added to Cart !');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <CustomHeader title={'Product Details'} backFunc={()=> navigation.goBack()}/>
-      <ScrollView>
+      <CustomHeader
+        title={'Product Details'}
+        backFunc={() => navigation.goBack()}
+      />
+      <ScrollView style={{marginBottom: 100}}>
         <View>
           <Image
             source={product.image}
@@ -56,13 +64,12 @@ const ProductDetailsScreen = ({route,navigation}) => {
           />
           <Text style={styles.descriptionText}>{product.description}</Text>
         </View>
+
         <View style={styles.colorSizeContainer}>
-          <View>
+          <View style={{width: screenWidth / 2.5}}>
             <Text style={styles.header}> Color</Text>
-            <FlatList
-              horizontal
-              data={product.colorAvailable}
-              renderItem={({item}) => (
+            <View style={[styles.insideContainer]}>
+              {product.colorAvailable.map((item, index) => (
                 <TouchableOpacity
                   style={[
                     {
@@ -70,42 +77,45 @@ const ProductDetailsScreen = ({route,navigation}) => {
                       backgroundColor: item,
                     },
                     styles.colorBox,
-                  ]} onPress={()=>setSelectedColor(item)}>{selectedColor == item && <Icon name='check' color={colors.primaryGrey} size={30}/>}</TouchableOpacity>
-              )}
-            />
+                  ]}
+                  key={item}
+                  onPress={() => setSelectedColor(item)}>
+                  {selectedColor == item && (
+                    <Icon name="check" color={colors.primaryGrey} size={30} />
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
-          <View>
+
+          <View style={{width: screenWidth / 2.5}}>
             <Text style={styles.header}>Size</Text>
-            <FlatList
-              horizontal
-              data={product.sizeAvailable}
-              contentContainerStyle={{flexWrap:'wrap'}}
-              renderItem={({item}) => (
+            <View style={[styles.insideContainer]}>
+              {product.sizeAvailable.map((item, index) => (
                 <TouchableOpacity
+                  key={index}
                   style={[
                     styles.sizeBox,
-                    selectedSize == item && styles.selectedSizeContainer,
+                    selectedSize === item && styles.selectedSizeContainer,
                   ]}
                   onPress={() => setSelectedSize(item)}>
-                  <Text style={selectedSize == item && styles.selectedSizeText}>
+                  <Text
+                    style={selectedSize === item && styles.selectedSizeText}>
                     {item}
                   </Text>
                 </TouchableOpacity>
-              )}
-            />
+              ))}
+            </View>
           </View>
         </View>
 
-        <CustomButton
-          buttonName={'Add to Cart'}
-          handleFunc={undefined}
-          containerStyles={{
-            backgroundColor: 'black',
-            marginVertical: 20,
-            width: '70%',
-          }}
-          textStyles={{color: 'white'}}
-        />
+        <View style={styles.buttonOuterContainer}>
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={() => handleCartAddition(product.id)}>
+            <Text style={styles.buttonText}>Add to Cart</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -130,14 +140,21 @@ const styles = StyleSheet.create({
     letterSpacing: 3,
   },
   colorSizeContainer: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
+  },
+  insideContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   colorBox: {
     borderWidth: 1,
     height: 40,
     width: 40,
     marginHorizontal: 4,
+    marginVertical: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -147,6 +164,7 @@ const styles = StyleSheet.create({
     height: 40,
     width: 40,
     marginHorizontal: 4,
+    marginVertical: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -155,5 +173,19 @@ const styles = StyleSheet.create({
   },
   selectedSizeText: {
     color: 'white',
+  },
+  buttonContainer: {
+    width: '70%',
+    padding: 15,
+    marginVertical: 20,
+    backgroundColor: colors.primaryBlack,
+  },
+  buttonOuterContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: colors.primaryWhite,
+    textAlign: 'center',
   },
 });

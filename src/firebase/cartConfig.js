@@ -9,7 +9,7 @@ import {
 import {Alert} from 'react-native';
 import {db} from './fireBaseConfig'; // Ensure correct path
 
-export const addToWishlist = async (productId, user) => {
+export const addToCart = async (productId, user) => {
 /*   console.log('In addToWishlist');
   console.log(auth);
   if (!auth.currentUser) {
@@ -23,19 +23,20 @@ export const addToWishlist = async (productId, user) => {
     if (docSnap.exists()) {
       // Document exists, update the wishlist
       await updateDoc(userRef, {
-        wishlist: arrayUnion(productId),
+        cart: arrayUnion(productId),
       });
+      console.log("Item Added");
       return true;
     } else {
       // Document doesn't exist, create a new one
       await setDoc(userRef, {
         email: user.email,
-        wishlist: [productId],
+        cart: [productId],
       });
       return true;
     }
   } catch (error) {
-    Alert.alert('Error', `Error while adding items to wishlist ${error.toString()}`);
+    Alert.alert('Error', `Error while adding items to Cart ${error.toString()}`);
   }
 };
 
@@ -43,12 +44,12 @@ export const removeFromWishlist = async ( productId,user) => {
     const userRef = doc(db, "users", user.uid);
     try {
         await updateDoc(userRef, {
-            wishlist: arrayRemove(productId) // Removes only the specified productId
+            cart: arrayRemove(productId) // Removes only the specified productId
         });
 
-        console.log("Product removed from wishlist!");
+        console.log("Product removed from Cart!");
     } catch (error) {
-        Alert.alert("Error", "Error while removing item from wishlist");
+        Alert.alert("Error", "Error while removing item from Cart");
     }
 };
 
@@ -60,13 +61,12 @@ export const getWishlist = async (user) => {
 
         if (docSnap.exists()) {
             const data = docSnap.data();
-            return data.wishlist || []; // Return wishlist if exists, else return empty array
+            return data.cart || []; // Return wishlist if exists, else return empty array
         } else {
-            console.log("No wishlist found.");
             return [];
         }
     } catch (error) {
-        console.error("Error fetching wishlist:", error);
+        console.error("Error fetching Cart:", error);
         return [];
     }
 };

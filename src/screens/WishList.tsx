@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import CustomHeader from '../components/CustomHeader';
 import {colors} from '../utils/theme';
 import Icon from 'react-native-vector-icons/Feather';
@@ -37,10 +37,12 @@ const WishListProductCard = ({
 }: {
   product: Product;
   removeFunc: Function;
-  navigationFunc:Function
+  navigationFunc: Function;
 }) => {
   return (
-    <TouchableOpacity style={productStyles.container} onPress={() => navigationFunc(product)}>
+    <TouchableOpacity
+      style={productStyles.container}
+      onPress={() => navigationFunc(product)}>
       <View
         style={{flexDirection: 'row', justifyContent: 'flex-end', width: 200}}>
         <TouchableOpacity
@@ -54,9 +56,9 @@ const WishListProductCard = ({
         style={productStyles.image}
         resizeMode="cover"
       />
-      <TouchableOpacity style={productStyles.textContainer}>
+      <View style={productStyles.textContainer}>
         <Text style={productStyles.text}>{product.name}</Text>
-      </TouchableOpacity>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -65,6 +67,7 @@ const WishList = ({navigation}) => {
   const {user} = useGlobalContext();
   const [wishListProducts, setWishListProducts] = useState<Product[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     getWishListProducts();
@@ -89,27 +92,26 @@ const WishList = ({navigation}) => {
     console.log('after deletion WIshList', wishListProducts);
   };
 
-
-    /* Navigation function to Product Details Screen */
-    const navigateToProductDetails = (product: any) => {
-      navigation.navigate('ProductDetails', {
-        product: product,
-      });
-    };
+  /* Navigation function to Product Details Screen */
+  const navigateToProductDetails = (product: any) => {
+    navigation.navigate('ProductDetails', {
+      product: product,
+    });
+  };
 
   return (
     <SafeAreaView>
-      <CustomHeader title={'Wishlist'} backFunc={undefined} />
+      <CustomHeader title={'Wishlist'} backFunc={() => navigation.goBack()} />
       <Text style={styles.context}>See your favorite products here</Text>
       <ScrollView
-        style={styles.container}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={getWishListProducts}
             colors={[colors.primaryBlack]}
           />
-        }>
+        }
+        contentContainerStyle={{paddingBottom: insets.bottom + 200}}>
         <FlatList
           data={wishListProducts}
           keyExtractor={item => item.id.toString()}
@@ -137,9 +139,6 @@ const WishList = ({navigation}) => {
 export default WishList;
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 200,
-  },
   context: {
     textAlign: 'center',
     letterSpacing: 3,

@@ -97,7 +97,7 @@ const SignUpScreen = ({navigation}) => {
   };
   return (
     <SafeAreaView>
-      <LoadingModal visible={isModalVisible}/>
+      <LoadingModal visible={isModalVisible} />
       <ScrollView>
         <View style={styles.container}>
           <Text style={styles.welcomeText}>New Account</Text>
@@ -112,12 +112,14 @@ const SignUpScreen = ({navigation}) => {
             placeholder={'Email'}
             handleChangeText={e => setFormValues({...formValues, email: e})}
             otherStyles={{paddingHorizontal: '5%'}}
+            keyboardType="email-address"
           />
           <FormField
             value={formValues.password}
             placeholder={'Password'}
             handleChangeText={e => setFormValues({...formValues, password: e})}
             otherStyles={{paddingHorizontal: '5%'}}
+            keyboardType="visible-password"
           />
           <FormField
             value={formValues.confirmPassword}
@@ -126,6 +128,7 @@ const SignUpScreen = ({navigation}) => {
               setFormValues({...formValues, confirmPassword: e})
             }
             otherStyles={{paddingHorizontal: '5%'}}
+            keyboardType="visible-password"
           />
 
           <TouchableOpacity
