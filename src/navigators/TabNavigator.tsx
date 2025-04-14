@@ -6,12 +6,14 @@ import WishList from '../screens/WishList';
 
 import AiCamera from '../screens/AiCamera';
 import Wardrobe from '../screens/Wardrobe';
-import Profile from '../screens/Profile';
+import Profile from '../screens/profile/Profile';
 import ProductDetailsScreen from '../screens/ProductDetailsScreen';
 import Icon from 'react-native-vector-icons/Feather';
 import LogInScreen from '../screens/auth/LogInScreen';
 import HomeScreen from '../screens/HomeScreen';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { ProfileStack } from '../../App';
+import Cart from '../screens/Cart';
 
 const Tab = createBottomTabNavigator();
 
@@ -34,72 +36,69 @@ const TabNavigator = () => {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: styles.tabBarStyle,
+        /* tabBarHideOnKeyboard:true */
       }}>
-        <Tab.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            tabBarIcon: ({focused, color, size}) => (
-              <TabIcon
-                focused={focused}
-                iconName={'home'}
-                screenName={'Home'}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="WishList"
-          component={WishList}
-          options={{
-            tabBarIcon: ({focused, color, size}) => (
-              <TabIcon
-                focused={focused}
-                iconName={'heart'}
-                screenName={'Favorite'}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="AiCamera"
-          component={AiCamera}
-          options={{
-            tabBarIcon: ({focused}) => (
-              <TabIcon
-                focused={focused}
-                iconName={'camera'}
-                screenName={'AICam'}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Wardrobe"
-          component={Wardrobe}
-          options={{
-            tabBarIcon: ({focused}) => (
-              <TabIcon
-                focused={focused}
-                iconName={'shopping-cart'}
-                screenName={'Cart'}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Profile"
-          component={Profile}
-          options={{
-            tabBarIcon: ({focused}) => (
-              <TabIcon
-                focused={focused}
-                iconName={'user'}
-                screenName={'Profile'}
-              />
-            ),
-          }}
-        />
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({focused, color, size}) => (
+            <TabIcon focused={focused} iconName={'home'} screenName={'Home'} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="WishList"
+        component={WishList}
+        options={{
+          tabBarIcon: ({focused, color, size}) => (
+            <TabIcon
+              focused={focused}
+              iconName={'heart'}
+              screenName={'Favorite'}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="AiCamera"
+        component={AiCamera}
+        options={{
+          tabBarIcon: ({focused}) => (
+            <TabIcon
+              focused={focused}
+              iconName={'camera'}
+              screenName={'AICam'}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Cart"
+        component={Cart}
+        options={{
+          tabBarIcon: ({focused}) => (
+            <TabIcon
+              focused={focused}
+              iconName={'shopping-cart'}
+              screenName={'Cart'}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileStack}
+        options={{
+          tabBarIcon: ({focused}) => (
+            <TabIcon
+              focused={focused}
+              iconName={'user'}
+              screenName={'Profile'}
+            />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 };

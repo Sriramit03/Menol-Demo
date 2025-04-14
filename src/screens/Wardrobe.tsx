@@ -8,119 +8,126 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {colors} from '../utils/theme';
 import {icons} from '../utils/icons';
-import ProductCard from '../components/ProductCard';
 
-const Wardrobe = () => {
-  const products = [
-    {
-      id: 1,
-      outfitType: 'Everyday Outfit',
-      image: require('../../assets/images/wardrobeproduct/Media1.png'),
-    },
-    {
-      id: 2,
-      outfitType: 'Party Outfit',
-      image: require('../../assets/images/wardrobeproduct/Media2.png'),
-    },
-    {
-      id: 3,
-      outfitType: 'Weekend Outfit',
-      image: require('../../assets/images/wardrobeproduct/Media3.png'),
-    },
-    {
-      id: 4,
-      outfitType: 'Office Output',
-      image: require('../../assets/images/wardrobeproduct/Media4.png'),
-    },
-  ];
-  const perfumes = [
-    {
-      id: 1,
-      name: 'Armani',
-      image: require('../../assets/images/Perfumes/Media1.jpeg'),
-    },
-    {
-      id: 2,
-      name: 'Duoma',
-      image: require('../../assets/images/Perfumes/Media2.jpeg'),
-    },
-    {
-      id: 3,
-      name: 'Dolce',
-      image: require('../../assets/images/Perfumes/Media3.jpeg'),
-    },
-    {
-      id: 4,
-      name: 'Mandarava',
-      image: require('../../assets/images/Perfumes/Media4.jpeg'),
-    },
-    {
-      id: 5,
-      name: 'Armani',
-      image: require('../../assets/images/Perfumes/Media1.jpeg'),
-    },
-    {
-      id: 6,
-      name: 'Duoma',
-      image: require('../../assets/images/Perfumes/Media2.jpeg'),
-    },
-    {
-      id: 7,
-      name: 'Dolce',
-      image: require('../../assets/images/Perfumes/Media3.jpeg'),
-    },
-    {
-      id: 8,
-      name: 'Mandarava',
-      image: require('../../assets/images/Perfumes/Media4.jpeg'),
-    },
-    {
-      id: 9,
-      name: 'Duoma',
-      image: require('../../assets/images/Perfumes/Media2.jpeg'),
-    },
-    {
-      id: 10,
-      name: 'Dolce',
-      image: require('../../assets/images/Perfumes/Media3.jpeg'),
-    },
-    {
-      id: 11,
-      name: 'Mandarava',
-      image: require('../../assets/images/Perfumes/Media4.jpeg'),
-    },
-    {
-      id: 12,
-      name: 'Duoma',
-      image: require('../../assets/images/Perfumes/Media2.jpeg'),
-    },
-    {
-      id: 13,
-      name: 'Dolce',
-      image: require('../../assets/images/Perfumes/Media3.jpeg'),
-    },
-    {
-      id: 14,
-      name: 'Mandarava',
-      image: require('../../assets/images/Perfumes/Media4.jpeg'),
-    },
-  ];
+import CustomHeader from '../components/CustomHeader';
+const products = [
+  {
+    id: 1,
+    outfitType: 'Everyday Outfit',
+    image: require('../../assets/images/wardrobeproduct/Media1.png'),
+  },
+  {
+    id: 2,
+    outfitType: 'Party Outfit',
+    image: require('../../assets/images/wardrobeproduct/Media2.png'),
+  },
+  {
+    id: 3,
+    outfitType: 'Weekend Outfit',
+    image: require('../../assets/images/wardrobeproduct/Media3.png'),
+  },
+  {
+    id: 4,
+    outfitType: 'Office Output',
+    image: require('../../assets/images/wardrobeproduct/Media4.png'),
+  },
+];
+const perfumes = [
+  {
+    id: 1,
+    name: 'Armani',
+    image: require('../../assets/images/Perfumes/Media1.jpeg'),
+  },
+  {
+    id: 2,
+    name: 'Duoma',
+    image: require('../../assets/images/Perfumes/Media2.jpeg'),
+  },
+  {
+    id: 3,
+    name: 'Dolce',
+    image: require('../../assets/images/Perfumes/Media3.jpeg'),
+  },
+  {
+    id: 4,
+    name: 'Mandarava',
+    image: require('../../assets/images/Perfumes/Media4.jpeg'),
+  },
+  {
+    id: 5,
+    name: 'Armani',
+    image: require('../../assets/images/Perfumes/Media1.jpeg'),
+  },
+  {
+    id: 6,
+    name: 'Duoma',
+    image: require('../../assets/images/Perfumes/Media2.jpeg'),
+  },
+  {
+    id: 7,
+    name: 'Dolce',
+    image: require('../../assets/images/Perfumes/Media3.jpeg'),
+  },
+  {
+    id: 8,
+    name: 'Mandarava',
+    image: require('../../assets/images/Perfumes/Media4.jpeg'),
+  },
+  {
+    id: 9,
+    name: 'Duoma',
+    image: require('../../assets/images/Perfumes/Media2.jpeg'),
+  },
+  {
+    id: 10,
+    name: 'Dolce',
+    image: require('../../assets/images/Perfumes/Media3.jpeg'),
+  },
+  {
+    id: 11,
+    name: 'Mandarava',
+    image: require('../../assets/images/Perfumes/Media4.jpeg'),
+  },
+  {
+    id: 12,
+    name: 'Duoma',
+    image: require('../../assets/images/Perfumes/Media2.jpeg'),
+  },
+  {
+    id: 13,
+    name: 'Dolce',
+    image: require('../../assets/images/Perfumes/Media3.jpeg'),
+  },
+  {
+    id: 14,
+    name: 'Mandarava',
+    image: require('../../assets/images/Perfumes/Media4.jpeg'),
+  },
+];
+
+
+const ProductCard = ({item}) => {
+  return (
+    <View style={cardStyles.productContainer}>
+      <Image source={item.image} style={cardStyles.productImage} resizeMode='cover'/>
+      <View style={cardStyles.textContainer}>
+        <Text style={cardStyles.outfitType}>{item.outfitType}</Text>
+      </View>
+    </View>
+  );
+};
+
+
+const Wardrobe = ({navigation}) => {
+  
 
   return (
-    <SafeAreaProvider>
-      <View style={[styles.headerContainer]}>
-        <TouchableOpacity style={styles.headerIconContainer}>
-          <Image source={icons.leftArrow} style={styles.headerIcon} />
-        </TouchableOpacity>
-        <View style={[styles.textContainer]}>
-          <Text style={styles.headerText}>Wardrobe</Text>
-        </View>
-      </View>
+    <>
+      <CustomHeader title={'Wardrobe'} backFunc={() => navigation.goBack()} />
 
-      <ScrollView style={{marginBottom:100}}>
+      <ScrollView >
         <View style={styles.bodyContainer}>
           <View style={styles.plusButtonContainer}>
             <TouchableOpacity style={styles.plusButton}>
@@ -146,32 +153,27 @@ const Wardrobe = () => {
           <Text style={styles.bottomHeader}>Perfume</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {perfumes.map(item => (
-              <TouchableOpacity key={item.id.toString()} style={styles.perfumeContainer}>
-                <Image source={item.image} style={styles.perfumeImage} resizeMode='stretch' />
+              <TouchableOpacity
+                key={item.id.toString()}
+                style={styles.perfumeContainer}>
+                <Image
+                  source={item.image}
+                  style={styles.perfumeImage}
+                  resizeMode="stretch"
+                />
                 <Text style={styles.perfumeText}>{item.name}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
       </ScrollView>
-    </SafeAreaProvider>
+    </>
   );
 };
 
 export default Wardrobe;
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    padding: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerIconContainer: {
-    padding: 10,
-    borderWidth: 1,
-    borderRadius: 25,
-    borderColor: colors.primaryGrey,
-  },
   textContainer: {
     marginLeft: 100,
   },
@@ -188,9 +190,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
   },
-  productsContainer: {
-
-  },
+  productsContainer: {},
   plusButtonContainer: {
     left: '48%',
     position: 'absolute',
@@ -205,31 +205,61 @@ const styles = StyleSheet.create({
     width: 44,
     padding: 10,
     borderRadius: 25,
-    backgroundColor: colors.primaryBlue,
+    backgroundColor: colors.primaryBlack,
   },
 
-  bottomContainer: {
-  },
+  bottomContainer: {},
   bottomHeader: {
     fontSize: 16,
     fontWeight: '600',
     paddingHorizontal: 20,
   },
-  perfumeImage:{
+  perfumeImage: {
     width: 170,
-    height:200,
-    borderRadius:25
+    height: 200,
+    borderRadius: 25,
+  },
+  perfumeContainer: {
+    marginLeft: 20,
+    borderRadius: 30,
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  perfumeText: {
+    paddingVertical: 10,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
 
+
+
+const cardStyles = StyleSheet.create({
+  productContainer: {
+    flex:1,
+    marginHorizontal:'2%',
+    borderWidth: 1,
+    borderColor:colors.primaryGrey,
+    borderRadius: 16,
+    padding: 8,
+    marginBottom: 15,
+    alignItems: 'center',
   },
-  perfumeContainer:{
-    marginLeft:20,
-    borderRadius:30,
-    alignItems:'center',
-    marginVertical:20,
+  productImage: {
+    width:'100%',
+    height:160,
+    borderRadius:25,
   },
-  perfumeText:{
-     paddingVertical:10,
-     fontSize:16,
-     fontWeight:'600'
-  }
+  textContainer: {
+    minWidth:140,
+    marginVertical: 15,
+    padding: 10,
+    backgroundColor: colors.primaryBlack,
+    borderRadius: 25,
+  },
+  outfitType: {
+    textAlign:'center',
+    fontSize: 16,
+    color: colors.primaryWhite,
+  },
 });

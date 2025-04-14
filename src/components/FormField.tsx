@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
      
     }, 
   textFieldContainer: {
-    height:70,
+    minHeight:70,
     borderColor:colors.primaryGrey,
     borderWidth:1,
     paddingHorizontal:20,

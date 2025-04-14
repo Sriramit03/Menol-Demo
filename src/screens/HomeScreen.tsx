@@ -69,7 +69,7 @@ const ProductCard = ({
 };
 
 const App = ({navigation}) => {
-  const [searchValue, setSearchValue] = useState('');
+  const [searchText, setSearchText] = useState('');
   const [products, setProducts] = useState(Products);
   const category = ['All', 'Jacket', 'Shirt', 'Trouser', 'Hoodie'];
   const [wishListItems, setWishListItems] = useState<Number[]>([]);
@@ -111,7 +111,6 @@ const App = ({navigation}) => {
         item => item.category === filters.category,
       );
     }
-    console.log('After Category Update ! ', filteredProducts);
     setProducts(filteredProducts);
   }, [state.category]);
 
@@ -212,6 +211,27 @@ const App = ({navigation}) => {
     setFilterVisible(false);
   };
 
+  const handleSearch = () => {
+    if (!searchText || typeof searchText !== 'string') {
+      setProducts(Products); // fallback to show all
+      return;
+    }
+    const keywords = searchText.toLowerCase().split(' ');
+    const filtered = Products.filter(product => {
+      return keywords.every(
+        word =>
+          product.name.toLowerCase().includes(word) ||
+          product.category.toLowerCase().includes(word) ||
+          product.colorAvailable?.some(color =>
+            color.toLowerCase().includes(word),
+          ) ||
+          product.type.toLowerCase().includes(word),
+      );
+    });
+    console.log('FIltered', filtered);
+    setProducts(filtered);
+  };
+
   return !filterVisible ? (
     /* Outer Container for Home Screen */
     <>
@@ -232,15 +252,19 @@ const App = ({navigation}) => {
 
         <View style={styles.searchWithFilter}>
           <View style={styles.searchGrid}>
-            <TouchableOpacity onPress={undefined}>
+            <TouchableOpacity onPress={() => handleSearch()}>
               <Icon name="search" size={26} />
             </TouchableOpacity>
             <TextInput
               placeholder="Search"
-              value={searchValue}
+              value={searchText}
               style={styles.searchInput}
               placeholderTextColor={colors.primaryGrey}
-              onChange={e => setSearchValue(e)}
+              onChangeText={e => {
+                setSearchText(e);
+              }}
+              returnKeyType="search"
+              onSubmitEditing={handleSearch}
             />
           </View>
           <TouchableOpacity
@@ -335,12 +359,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 4,
+    justifyContent: 'space-between',
     paddingHorizontal: 20,
-    gap: 15,
     width: '80%',
   },
 
   searchInput: {
+    width: '85%',
     fontSize: 16,
     letterSpacing: 3,
     color: colors.primaryGreen,

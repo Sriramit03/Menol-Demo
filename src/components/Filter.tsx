@@ -18,7 +18,7 @@ const Brand = ['All', 'Nike', 'Adidas', 'H&M', 'Raymond', 'Allen Solly'];
 const Category = [
   'All',
   'Shirt',
-  'T-Shirt',
+  'TShirt',
   'Trousers',
   'Shorts',
   'Sneakers',

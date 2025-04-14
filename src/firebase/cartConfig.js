@@ -40,7 +40,7 @@ export const addToCart = async (productId, user) => {
   }
 };
 
-export const removeFromWishlist = async ( productId,user) => {
+export const removeFromCart = async ( productId,user) => {
     const userRef = doc(db, "users", user.uid);
     try {
         await updateDoc(userRef, {
@@ -53,7 +53,7 @@ export const removeFromWishlist = async ( productId,user) => {
     }
 };
 
-export const getWishlist = async (user) => {
+export const getCartItems = async (user) => {
     const userRef = doc(db, "users", user.uid);
 
     try {

@@ -4,16 +4,16 @@ import {colors} from '../utils/theme';
 
 const ProductCard = ({item}) => {
   return (
-    <View style={styles.productContainer}>
-      <Image source={item.image} style={styles.productImage} resizeMode='cover'/>
-      <View style={styles.textContainer}>
-        <Text style={styles.outfitType}>{item.outfitType}</Text>
+    <View style={cardStyles.productContainer}>
+      <Image source={item.image} style={cardStyles.productImage} resizeMode='cover'/>
+      <View style={cardStyles.textContainer}>
+        <Text style={cardStyles.outfitType}>{item.outfitType}</Text>
       </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const cardStyles = StyleSheet.create({
   productContainer: {
     flex:1,
     marginHorizontal:'2%',
