@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, View, ActivityIndicator, StyleSheet } from 'react-native';
 import { colors } from '../utils/theme';
 
-const LoadingModal = ({ visible }: { visible: boolean }) => {
+const LoadingModal = ({ visible}: { visible: boolean,}) => {
   return (
     <Modal
       transparent

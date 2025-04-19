@@ -35,11 +35,7 @@ const LogInScreen = ({navigation}) => {
         setIsModalVisible(true);
         const result = await logIn(formValues.name, formValues.password);
         setIsModalVisible(false);
-        setUser({
-          name: result.user.displayName,
-          email: result.user.email,
-          uid: result.user.uid,
-        });
+        setUser(result);
         Alert.alert('Success', `LogIn Successfully!`);
         setFormValues({
           name: '',
@@ -61,14 +57,10 @@ const LogInScreen = ({navigation}) => {
     if (!res) {
       Alert.alert('Failure', 'Google Sign-In Failed!');
     } else {
-      setUser({
-        name: res?.user.displayName,
-        email: res?.user.email,
-        uid: res?.user.uid,
-      });
+      setUser(res);
       Alert.alert(
         'Success',
-        `Successfully Logged In as ${res?.user.displayName}`,
+        `Successfully Logged In as ${res.name}`,
         [
           {
             text: 'Ok',

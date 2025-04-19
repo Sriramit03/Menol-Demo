@@ -41,11 +41,7 @@ const SignUpScreen = ({navigation}) => {
         setIsModalVisible(true);
         const res = await signUp(formValues.email, formValues.password);
         setIsModalVisible(false);
-        setUser({
-          name: res?.user.displayName,
-          email: res?.user.email,
-          uid: res.user.uid,
-        });
+        setUser(res);
         Alert.alert('Success', 'New Account Created Successful!');
         setFormValues({
           name: '',
@@ -73,11 +69,7 @@ const SignUpScreen = ({navigation}) => {
     if (!res) {
       Alert.alert('Failure', 'Google Sign-Un Failed!');
     } else {
-      setUser({
-        name: res?.user.displayName,
-        email: res?.user.email,
-        uid: res?.user.uid,
-      });
+      setUser(res);
       Alert.alert(
         'Success',
         `Successfully Signed In as ${res?.user.displayName}`,
