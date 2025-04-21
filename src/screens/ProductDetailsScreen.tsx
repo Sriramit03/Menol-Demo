@@ -109,12 +109,20 @@ const ProductDetailsScreen = ({route, navigation}) => {
           </View>
         </View>
 
-        <View style={styles.buttonOuterContainer}>
-          <TouchableOpacity
-            style={styles.buttonContainer}
-            onPress={() => handleCartAddition(product.id)}>
-            <Text style={styles.buttonText}>Add to Cart</Text>
-          </TouchableOpacity>
+        <View style={styles.bottomButtonGrid}>
+          <View style={styles.buttonOuterContainer}>
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => handleCartAddition(product.id)}>
+              <Text style={styles.buttonText}>Add to Cart</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.buttonOuterContainer}>
+            <TouchableOpacity style={styles.buttonContainer}>
+              <Text style={styles.buttonText}>Buy Now</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -175,9 +183,8 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   buttonContainer: {
-    width: '70%',
+    minWidth:100,
     padding: 15,
-    marginVertical: 20,
     backgroundColor: colors.primaryBlack,
   },
   buttonOuterContainer: {
@@ -188,4 +195,9 @@ const styles = StyleSheet.create({
     color: colors.primaryWhite,
     textAlign: 'center',
   },
+  bottomButtonGrid:{
+  marginVertical:20,
+  flexDirection:'row',
+  justifyContent:'space-around',
+  }
 });

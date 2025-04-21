@@ -7,36 +7,31 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingModal from '../components/LoadingModal';
 
 const LoadingScreen = ({navigation}) => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const {loading} = useGlobalContext();
 
   const getUserDetails = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('userDetails');
-      const user = jsonValue != null ? JSON.parse(jsonValue) : null;
-      console.log('UserDetails in Conrtext', user);
-      return user;
+      const userDetails = jsonValue != null ? JSON.parse(jsonValue) : null;
+      return userDetails;
     } catch (e) {
       console.error('Error retrieving user details', e);
     }
   };
 
   useEffect(() => {
-    setModalVisible(true);
-    getUserDetails().then(res => {
-      console.log('Result in LoadingScreen', res);
-      setModalVisible(false);
-      if (res != null) navigation.replace('Tab');
-      else navigation.replace('LogInScreen');
-    });
-  }, []);
+    if (!loading) {
+      getUserDetails().then(res => {
+        if (res != null) navigation.replace('Tab');
+        else navigation.replace('LogInScreen');
+      });
+    }
+  }, [loading]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.mainText}>MENOL</Text>
-      <ActivityIndicator
-        size="small"
-        color={colors.primaryWhite}
-      />
+      <ActivityIndicator size="small" color={colors.primaryWhite} />
     </View>
   );
 };
@@ -55,6 +50,6 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: colors.primaryWhite,
     letterSpacing: 6,
-    marginBottom:10,
+    marginBottom: 10,
   },
 });

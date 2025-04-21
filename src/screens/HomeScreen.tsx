@@ -10,6 +10,7 @@ import {
   FlatList,
   Dimensions,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {colors} from '../utils/theme';
 import {fonts} from '../utils/fonts';
@@ -24,6 +25,7 @@ import {
 } from '../firebase/wishListConfig';
 import {useGlobalContext} from '../context/GlobalProvider';
 import Filter, {FilterScrollView} from '../components/Filter';
+import LoadingModal from '../components/LoadingModal';
 
 const ProductCard = ({
   product,
@@ -74,8 +76,10 @@ const App = ({navigation}) => {
   const category = ['All', 'Jacket', 'Shirt', 'Trouser', 'Hoodie'];
   const [wishListItems, setWishListItems] = useState<Number[]>([]);
   const [filterVisible, setFilterVisible] = useState(false);
-  const {user} = useGlobalContext();
+  const {user, loading} = useGlobalContext();
   const insets = useSafeAreaInsets();
+  const [isIntialLoading, setIsIntialLoading] = useState(true);
+  const [searchLoaderVisible, setSearchLoaderVisible] = useState(false);
   const intialState = {
     brand: 'All',
     category: 'All',
@@ -128,7 +132,10 @@ const App = ({navigation}) => {
   /* To Get WishList Items and assign it to setWishListItems state */
 
   const getWishListItems = async () => {
-    setWishListItems(await getWishlist(user));
+    getWishlist(user).then(res => {
+      setWishListItems(res);
+      setIsIntialLoading(false);
+    });
   };
 
   /* Add Items to wishlist both in local state and firebase */
@@ -212,8 +219,10 @@ const App = ({navigation}) => {
   };
 
   const handleSearch = () => {
+    setSearchLoaderVisible(true);
     if (!searchText || typeof searchText !== 'string') {
       setProducts(Products); // fallback to show all
+      setSearchLoaderVisible(false);
       return;
     }
     const keywords = searchText.toLowerCase().split(' ');
@@ -228,9 +237,13 @@ const App = ({navigation}) => {
           product.type.toLowerCase().includes(word),
       );
     });
-    console.log('FIltered', filtered);
     setProducts(filtered);
+    setSearchLoaderVisible(false);
   };
+
+/*   if (isIntialLoading) {
+    return <LoadingModal visible={isIntialLoading} />; // or splash screen
+  } */
 
   return !filterVisible ? (
     /* Outer Container for Home Screen */
@@ -238,6 +251,7 @@ const App = ({navigation}) => {
       <ScrollView
         style={styles.container}
         contentContainerStyle={{paddingBottom: insets.bottom + 80}}>
+        <LoadingModal visible={searchLoaderVisible} />
         {/* Hedaer Text with mail icon */}
         <View style={styles.header}>
           <Text style={[styles.headerTitle]}>MENOL</Text>
@@ -286,25 +300,29 @@ const App = ({navigation}) => {
           />
         </View>
 
-        <FlatList
-          data={products}
-          keyExtractor={item => item.id.toString()}
-          renderItem={({item}) => (
-            <ProductCard
-              product={item}
-              addItem={addItem}
-              isInWishList={isInWishList}
-              deleteItem={deleteItem}
-              navigationFunc={navigateToProductDetails}
-            />
-          )}
-          scrollEnabled={false}
-          ListEmptyComponent={
-            <View style={styles.emptyListContainer}>
-              <Text style={styles.emptyListText}>No Products Found !</Text>
-            </View>
-          }
-        />
+        {isIntialLoading ? (
+          <ActivityIndicator size="large" color="#000" />
+        ) : (
+          <FlatList
+            data={products}
+            keyExtractor={item => item.id.toString()}
+            renderItem={({item}) => (
+              <ProductCard
+                product={item}
+                addItem={addItem}
+                isInWishList={isInWishList}
+                deleteItem={deleteItem}
+                navigationFunc={navigateToProductDetails}
+              />
+            )}
+            scrollEnabled={false}
+            ListEmptyComponent={
+              <View style={styles.emptyListContainer}>
+                <Text style={styles.emptyListText}>No Products Found !</Text>
+              </View>
+            }
+          />
+        )}
       </ScrollView>
     </>
   ) : (
@@ -319,7 +337,6 @@ const App = ({navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     paddingHorizontal: 15,
   },
   headerTitle: {

@@ -62,7 +62,7 @@ const App = () => {
           <Stack.Screen
             name="Tab"
             component={TabNavigator}
-            options={{animation: 'slide_from_bottom'}}></Stack.Screen>
+            /* options={{animation: 'slide_from_bottom'}} */></Stack.Screen>
         </Stack.Navigator>
         <StatusBar barStyle={'light-content'} />
       </NavigationContainer>

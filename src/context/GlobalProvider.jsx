@@ -9,26 +9,28 @@ export const useGlobalContext = () => useContext(GlobalContext);
 // GlobalContext provider component
 const GlobalProvider = ({children}) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const getUserDetails = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('userDetails');
       const user = jsonValue != null ? JSON.parse(jsonValue) : null;
-      console.log('UserDetails in Conrtext', user)
       return user;
     } catch (e) {
       console.error('Error retrieving user details', e);
+    } finally {
     }
   };
 
   useEffect(() => {
     getUserDetails().then(res => {
       setUser(res);
+      setLoading(false);
     });
   }, []);
 
   return (
-    <GlobalContext.Provider value={{user, setUser}}>
+    <GlobalContext.Provider value={{user, setUser,loading}}>
       {children}
     </GlobalContext.Provider>
   );
