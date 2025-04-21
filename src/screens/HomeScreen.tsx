@@ -300,7 +300,7 @@ const App = ({navigation}) => {
           />
         </View>
 
-        {isIntialLoading ? (
+        {isIntialLoading || searchLoaderVisible ? (
           <ActivityIndicator size="large" color="#000" />
         ) : (
           <FlatList
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
     width: '85%',
     fontSize: 16,
     letterSpacing: 3,
-    color: colors.primaryGreen,
+    color: colors.primaryGrey,
   },
 
   filterContainer: {
